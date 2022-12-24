@@ -2,12 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import UserHomePage from './Components/User/UserHomePage'
+// import UserHomePage from './Components/Userlucofy/UserHomePage'
+
+
 import reportWebVitals from './reportWebVitals';
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
 root.render(
   <React.StrictMode>
     <App />
+    
+     {/* <h2>{testData}</h2> */}
   </React.StrictMode>
 );
 

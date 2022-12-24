@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { blue } from '@ant-design/colors'
 import { CreditCardOutlined, ExclamationCircleOutlined, WindowsOutlined, ProfileOutlined, InboxOutlined, HistoryOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Col, Layout, Menu, Row, theme } from 'antd'
+import { Button, message, Layout, Menu, Row, theme } from 'antd'
 import UserHomeDashboard from './pages/UserHomeDashboard'
 import UserInfoDashboard from './pages/UserInfoDashboard'
+import RecipientListDashboard from './pages/RecipientListDashboard'
+
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -45,7 +47,7 @@ const MenuItems = [
   }
 ]
 
-const UserHome = () => {
+const UserHome = ({logoutHandler}) => {
   const [currentDashboard, setCurrentDashboard] = useState(<UserHomeDashboard />)
 
   const {
@@ -60,9 +62,9 @@ const UserHome = () => {
       case 'User Info':
         setCurrentDashboard(<UserInfoDashboard />)
         break
-      // case "Recipients List":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
-      //   break;
+      case "Recipients List":
+        setCurrentDashboard(<RecipientListDashboard/>)
+        break;
       // case "Active Shipments":
       //   setCurrentDashboard(<UserHomeDashboard/>)
       //   break;
@@ -77,10 +79,15 @@ const UserHome = () => {
     }
   }
 
+  const logout = () => {
+    logoutHandler('Login')
+    message.warning("User has been logged out")
+  }
+  
   return (
-    <Layout style={{ backgroundColor: blue.primary }}>
+    <Layout style={{ backgroundColor: '#3c9ce4' }}>
 
-      <Header className='header' style={{ backgroundColor: blue.primary }}>
+      <Header className='header' style={{ backgroundColor: '#3c9ce4' }}>
         <div className='logo' />
         {/* <Menu theme='dark' mode='horizontal' /> */}
       </Header>
@@ -94,6 +101,7 @@ const UserHome = () => {
           style={{
             padding: '24px 0',
             background: colorBgContainer
+            
           }}
         >
           <Sider
@@ -106,7 +114,6 @@ const UserHome = () => {
             <Row style={{
               marginBottom: '30px',
               marginLeft: '75px',
-
               marginTop: '30px'
             }}
             >
@@ -121,7 +128,8 @@ const UserHome = () => {
                 defaultSelectedKeys={['1']}
                 defaultOpenKeys={['Dashboard']}
                 style={{
-                  height: '100%'
+                  height: '100%',
+                  
                 }}
                 items={MenuItems}
                 onClick={pageChangeHandler}
@@ -129,7 +137,7 @@ const UserHome = () => {
             </Row>
 
             <Row align='bottom'>
-              <Button block type='primary' style={{ marginLeft: '10px', marginRight: '10px', marginTop: '400px' }} danger>
+              <Button onClick={() => logout()}  block type='primary' style={{ marginLeft: '10px', marginRight: '10px', marginTop: '400px' }} danger>
                 Logout
               </Button>
             </Row>
@@ -138,7 +146,7 @@ const UserHome = () => {
           <Content
             style={{
               padding: '0 24px',
-              minHeight: 965
+              minHeight: 965,
             }}
           >
             {currentDashboard}
@@ -148,7 +156,7 @@ const UserHome = () => {
       <Footer
         style={{
           textAlign: 'center',
-          backgroundColor: blue.primary,
+          backgroundColor: '#3c9ce4',
           color: 'white'
         }}
       >

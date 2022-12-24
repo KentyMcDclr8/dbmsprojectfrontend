@@ -1,20 +1,36 @@
 
-import { Row, Input, Form, Button, InputNumber } from 'antd'
-import { InboxOutlined } from '@ant-design/icons'
+import { Row, Input, Form, Button,  } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
-// import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
-const UserHomeDashboard = (user) => {
+const UserInfoDashboard = (user) => {
+
   const [form] = Form.useForm()
+  const [viewMode, setViewMode] = useState(true)
+  const [buttonText, setButtonText] = useState('Edit')
+
 
   const updateUserInfo = () => {
     // TODO
-    return 1
+    setButtonText('Edit')
   }
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo)
   }
+
+  const buttonClickHandler = () => {
+    if (viewMode){
+      setViewMode(false)
+      setButtonText('Update')
+    }
+    else{
+      setViewMode(true)
+      updateUserInfo()
+    }
+  }
+  
 
   return (
     <>
@@ -36,34 +52,90 @@ const UserHomeDashboard = (user) => {
       >
         <Form.Item
           label='User ID'
-          key='userId'
-          name='userId'
+          key='id'
+          name='id'
+          initialValue={user.id}
           rules={[{ required: true, message: 'Missing User ID' }]}
         >
-          <Input maxLength={255} />
+          <Input disabled maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Name'
           key='name'
           name='name'
+          initialValue={user.name}
           rules={[{ required: true, message: 'Missing Name' }]}
         >
-          <Input maxLength={255} />
+          <Input disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
-          label='Description'
-          key='description'
-          name='description'
-          rules={[{ required: true, message: 'Missing Description' }]}
+          label='Email'
+          key='email'
+          name='email'
+          initialValue={user.email}
+          rules={[{ required: true, message: 'Missing Email' }]}
         >
-          <Input maxLength={255} />
+          <Input type='email'  disabled={viewMode} maxLength={255} />
         </Form.Item>
-
+        <Form.Item
+          label='Phone'
+          key='phone'
+          name='phone'
+          initialValue={user.phone}
+          rules={[{ required: true, message: 'Missing Phone' }]}
+        >
+          <Input type='phone' disabled={viewMode}  maxLength={255} />
+        </Form.Item>
+        <Form.Item
+          label='Password'
+          key='password'
+          name='password'
+          initialValue={user.password}
+          rules={[{ required: true, message: 'Missing Password' }]}
+        >
+          <Input type='password' disabled={viewMode}  maxLength={255} />
+        </Form.Item>
+        <Form.Item
+          label='Building No'
+          key='buildingNo'
+          name='buildingNo'
+          initialValue={user.buildingNo}
+          rules={[{ required: true, message: 'Missing Building No' }]}
+        >
+          <Input  disabled={viewMode}  maxLength={255} />
+        </Form.Item>
+        <Form.Item
+          label='Street No'
+          key='streetNo'
+          name='streetNo'
+          initialValue={user.buildingNo}
+          rules={[{ required: true, message: 'Missing Street No' }]}
+        >
+          <Input  disabled={viewMode}  maxLength={255} />
+        </Form.Item>
+        <Form.Item
+          label='City'
+          key='city'
+          name='city'
+          initialValue={user.city}
+          rules={[{ required: true, message: 'Missing City' }]}
+        >
+          <Input  disabled={viewMode}  maxLength={255} />
+        </Form.Item>
+        <Form.Item
+          label='Province'
+          key='province'
+          name='province'
+          initialValue={user.province}
+          rules={[{ required: true, message: 'Missing Province' }]}
+        >
+          <Input  disabled={viewMode}  maxLength={255} />
+        </Form.Item>
       </Form>
       <Row>
 
-        <Button block type='primary' icon={<InboxOutlined />} size='large' style={{ marginLeft: '30%', marginRight: '30%' }}>
-          Create New Package
+        <Button onClick={() => buttonClickHandler()} block type='primary' icon={<EditOutlined />} size='large' style={{ marginLeft: '30%', marginRight: '30%' }}>
+          {buttonText}
         </Button>
       </Row>
     </>
@@ -71,4 +143,4 @@ const UserHomeDashboard = (user) => {
   )
 }
 
-export default UserHomeDashboard
+export default UserInfoDashboard

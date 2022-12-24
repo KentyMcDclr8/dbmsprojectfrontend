@@ -1,44 +1,44 @@
-import React from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
+import React from 'react'
+import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons'
+import { Breadcrumb, Layout, Menu, theme } from 'antd'
+const { Header, Content, Footer, Sider } = Layout
 const items1 = ['1', '2', '3'].map((key) => ({
   key,
-  label: `nav ${key}`,
-}));
+  label: `nav ${key}`
+}))
 const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
-  const key = String(index + 1);
+  const key = String(index + 1)
   return {
     key: `sub${key}`,
     icon: React.createElement(icon),
     label: `subnav ${key}`,
     children: new Array(4).fill(null).map((_, j) => {
-      const subKey = index * 4 + j + 1;
+      const subKey = index * 4 + j + 1
       return {
         key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
-  };
-});
+        label: `option${subKey}`
+      }
+    })
+  }
+})
 const App = () => {
   const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+    token: { colorBgContainer }
+  } = theme.useToken()
   return (
     <Layout>
-      <Header className="header">
-        <div className="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+      <Header className='header'>
+        <div className='logo' />
+        <Menu theme='dark' mode='horizontal' defaultSelectedKeys={['2']} items={items1} />
       </Header>
       <Content
         style={{
-          padding: '0 50px',
+          padding: '0 50px'
         }}
       >
         <Breadcrumb
           style={{
-            margin: '16px 0',
+            margin: '16px 0'
           }}
         >
           <Breadcrumb.Item>Home</Breadcrumb.Item>
@@ -48,21 +48,21 @@ const App = () => {
         <Layout
           style={{
             padding: '24px 0',
-            background: colorBgContainer,
+            background: colorBgContainer
           }}
         >
           <Sider
             style={{
-              background: colorBgContainer,
+              background: colorBgContainer
             }}
             width={200}
           >
             <Menu
-              mode="inline"
+              mode='inline'
               defaultSelectedKeys={['1']}
               defaultOpenKeys={['sub1']}
               style={{
-                height: '100%',
+                height: '100%'
               }}
               items={items2}
             />
@@ -70,7 +70,7 @@ const App = () => {
           <Content
             style={{
               padding: '0 24px',
-              minHeight: 280,
+              minHeight: 280
             }}
           >
             Content
@@ -79,12 +79,12 @@ const App = () => {
       </Content>
       <Footer
         style={{
-          textAlign: 'center',
+          textAlign: 'center'
         }}
       >
         Ant Design ©2018 Created by Ant UED
       </Footer>
     </Layout>
-  );
-};
-export default App;
+  )
+}
+export default App

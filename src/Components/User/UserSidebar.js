@@ -26,9 +26,8 @@ const UserSidebar = ({
   handleShowActiveShipments,
   handleShowShipmentHistory,
   handleShowPaymentDetails,
-  handleShowComplaints,
+  handleShowComplaints
 }) => {
-
   // const dispatch = useDispatch()
   // const { tables } = useSelector((state) => state.FetchTables)
   // const { loaded } = useSelector((state) => state.InitialLoad)
@@ -38,10 +37,9 @@ const UserSidebar = ({
   // const [isTableSelected, setIsTableSelected] = useState(false)
   // const defaultTableIndex = 0
 
-
   return (
     <>
-      {/*<Button
+      {/* <Button
         type="primary"
         onClick={toggleCollapsed}
         style={{
@@ -69,7 +67,7 @@ const UserSidebar = ({
         </Menu.Item>
       </Menu>
     </>
-  );
-};
+  )
+}
 
-export default UserSidebar;
+export default UserSidebar

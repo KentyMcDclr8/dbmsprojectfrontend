@@ -1,15 +1,15 @@
 
 import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton, Space, Table, Tag, Form, Input } from 'antd'
-import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined, FilterOutlined, PlusOutlined, FileExclamationOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
+import { SyncOutlined, ExclamationCircleOutlined, DeleteOutlined, ExportOutlined, FilterOutlined, EditOutlined, FileExclamationOutlined, CheckCircleOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
-import DataTable from '../../DataTable'
 import { getSearchProps } from '../../SearchHelper'
+import DeliveryBranchSelectInput from '../Modals/DeliveryBranchSelectInput'
 
 const { Option } = Select
 const { TextArea } = Input
 
-const ActiveShipmentsDashboard = ({ user, addPackage }) => {
+const ManageComplaintsDashboard = ({ employee }) => {
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
   const [filteringValue, setFilteringValue] = useState([]) // Array of selected column keys
@@ -26,8 +26,8 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
 
-  const [complaintModal, setComplaintModal] = useState(false)
-  const [activePackageId, setActivePackageId] = useState(null)
+  const [complaintModal, setcomplaintModal] = useState(false)
+  const [activeComplaint, setActiveComplaint] = useState(null)
 
   const actionColumn = {
 
@@ -37,46 +37,34 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     width: 100,
     render: (_, record) => (
       <Space size='middle'>
-        <Popconfirm
-          title='Are you sure you want to put this package on Hold'
-          onConfirm={() => onHoldHandler(record.id)}
-        >
-          <HistoryOutlined style={{ color: '#fcb020' }} />
-        </Popconfirm>
-        <Tooltip
-          title='Submit Complaint'
-        >
-          <FileExclamationOutlined style={{ color: '#dd525f' }} onClick={() => onComplaintHandler(record.id)} />
-        </Tooltip>
 
+        <Tooltip
+          title='Manage Complaint'
+        >
+          <EditOutlined style={{ color: '#2196fc' }} onClick={() => onApproveHandler(record)} />
+        </Tooltip>
       </Space>
     )
   }
 
   const tagSelector = (text) => {
     console.log('text', text)
-    if (String(text).includes('Awaiting Pick-up')) {
+    if (String(text).includes('Resolved')) {
       return (
         <Tag icon={<ExportOutlined />} color='green'>
-          Awaiting Pick-up
+          Resolved
         </Tag>
       )
-    } else if (String(text).includes('On Hold')) {
+    } else if (String(text).includes('Invalid Complaint')) {
       return (
-        <Tag icon={<ExclamationCircleOutlined />} color='yellow'>
-          On Hold
-        </Tag>
-      )
-    } else if (String(text).includes('To Be Assigned')) {
-      return (
-        <Tag icon={<InboxOutlined />} color='volcano'>
-          To Be Assigned
+        <Tag icon={<ExclamationCircleOutlined />} color='volcano'>
+          Invalid Complaint
         </Tag>
       )
     } else {
       return (
         <Tag icon={<SyncOutlined />} color='blue'>
-          On the way
+          Processing
         </Tag>
       )
     }
@@ -84,7 +72,7 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
   const columns = [
     {
-      title: 'ID',
+      title: 'Complaint ID',
       dataIndex: 'id',
       key: 'id',
       id: 'id',
@@ -92,36 +80,36 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
       type: 'number'
     },
     {
-      title: 'Recipient Name',
-      id: 'name',
-      dataIndex: 'name',
-      key: 'name',
-      name: 'name',
-      type: 'varchar'
-    },
-    {
-      title: 'Weight',
-      id: 'weight',
-      dataIndex: 'weight',
-      key: 'weight',
-      name: 'weight',
-      type: 'varchar'
-    },
-    {
-      title: 'Dimensions',
-      id: 'dimensions',
-      dataIndex: 'dimensions',
-      key: 'dimensions',
-      name: 'dimensions',
-      type: 'varchar'
-    },
-    {
       title: 'Type',
       id: 'type',
       dataIndex: 'type',
       key: 'type',
       name: 'type',
-      type: 'type'
+      type: 'varchar'
+    },
+    {
+      title: 'Details',
+      id: 'details',
+      dataIndex: 'details',
+      key: 'details',
+      name: 'details',
+      type: 'varchar'
+    },
+    {
+      title: 'Date Resolved',
+      id: 'dateResolved',
+      dataIndex: 'dateResolved',
+      key: 'dateResolved',
+      name: 'dateResolved',
+      type: 'date'
+    },
+    {
+      title: 'Package ID',
+      id: 'packageId',
+      dataIndex: 'packageId',
+      key: 'packageId',
+      name: 'packageId',
+      type: 'number'
     },
     {
       title: 'Status',
@@ -136,13 +124,11 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
   const reset = () => {
     setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
+      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' },
+      { details: 'damage to package', id: 2, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Invalid Complaint' },
+      { details: 'damage to package', id: 3, dateResolved: '14-30-20', packageId: '503', type: 'Wrong Delivery', status: 'Processing' },
+      { details: 'damage to package', id: 4, dateResolved: '14-30-20', packageId: '503', type: 'Incorrect Status', status: 'Resolved' },
+      { details: 'damage to package', id: 5, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' }
     ])
 
     let cols = []
@@ -161,11 +147,10 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     reset()
   }, [])
 
-  const onHoldHandler = (id) => {
+  const onRejectHandler = (id) => {
     // TODO
 
-    setActivePackageId(id)
-    message.success('Package Hold Request Sent Successfully')
+    message.success('Courier Rejected Successfully')
   }
 
   const handleSorting = () => {
@@ -213,10 +198,9 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     getRecipients()
   }
 
-  const onComplaintHandler = (id) => {
-    console.log(`Record with id:${id} is deleted`)
-    setActivePackageId(id)
-    setComplaintModal(true)
+  const onApproveHandler = (record) => {
+    setActiveComplaint(record)
+    setcomplaintModal(true)
     form.resetFields()
     // setIsLoading(true)
     // deleteRecipient( id)
@@ -230,30 +214,27 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     // })
   }
 
-  const complaintApiCall = () => {
+  const editComplaintApiCall = () => {
     // TODO
-    setComplaintModal(false)
+    setcomplaintModal(false)
     form.resetFields()
-    message.success('Complaint Sent Successfully')
+    message.success('Complaint Updated Successfully')
   }
 
-  const complaintCancelled = () => {
-    setComplaintModal(false)
+  const editCancelled = () => {
+    setcomplaintModal(false)
     form.resetFields()
   }
 
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Active Shipments</h1>
+        <h1 style={{ fontSize: 50 }}>Manage Complaints</h1>
       </Row>
       <Row>
-        <Col offset={18} span={5}>
+        <Col offset={20} span={5}>
           <Button onClick={() => showFilter()} type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
-          </Button>
-          <Button onClick={() => addPackage()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Package
           </Button>
         </Col>
 
@@ -289,6 +270,18 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
                     size='small'
                     style={{ width: '100%' }}
                     scroll={{ x: 1550 }}
+                    expandable={{
+                      expandedRowRender: (record) => (
+                        <p
+                          style={{
+                            margin: 0
+                          }}
+                        >
+                          {record.details == null ? null : record.details}
+                        </p>
+                      )
+                      // rowExpandable: true,
+                    }}
                   />
                 </Row>)}
           </Col>
@@ -317,7 +310,7 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
         <Modal
           title='Create Complaint'
           visible={complaintModal}
-          onCancel={complaintCancelled}
+          onCancel={editCancelled}
           footer={null}
           width={800}
         >
@@ -328,7 +321,7 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
             layout='horizontal'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            onFinish={complaintApiCall}
+            onFinish={editComplaintApiCall}
             autoComplete='off'
             colon
           >
@@ -337,7 +330,7 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
               key='packageId'
               name='packageId'
 
-              initialValue={activePackageId === null ? null : activePackageId}
+              initialValue={activeComplaint === null ? null : activeComplaint.packageId}
             >
               <Input disabled />
             </Form.Item>
@@ -345,14 +338,16 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
               label='Details'
               key='details'
               name='details'
+              initialValue={activeComplaint === null ? null : activeComplaint.details}
               rules={[{ required: true, message: 'Missing Details' }]}
             >
               <TextArea rows={3} />
             </Form.Item>
             <Form.Item
               label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
+              key='type'
+              name='type'
+              initialValue={activeComplaint === null ? null : activeComplaint.type}
               rules={[{ required: true, message: 'Missing Complaint Type' }]}
             >
               <Select placeholder='Choose Complaint Type'>
@@ -361,6 +356,26 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
                   'Late Delivery',
                   'Wrong Package Deliveried',
                   'Other'
+                ].map(type => (
+                  <Select.Option key={type} value={type}>
+                    {type}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label='Status'
+              key='status'
+              name='status'
+              initialValue={activeComplaint === null ? null : activeComplaint.status}
+              rules={[{ required: true, message: 'Missing Complaint Type' }]}
+            >
+              <Select placeholder='Choose Complaint Status'>
+                {[
+                  'Resolved',
+                  'Invalid Complaint',
+                  'Processing'
                 ].map(type => (
                   <Select.Option key={type} value={type}>
                     {type}
@@ -390,4 +405,4 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   )
 }
 
-export default ActiveShipmentsDashboard
+export default ManageComplaintsDashboard

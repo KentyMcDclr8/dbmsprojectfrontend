@@ -292,7 +292,7 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
           </Select>
         </Modal>
         <Modal
-          title='Add New Recipient'
+          title='Create Complaint'
           visible={complaintModal}
           onCancel={complaintCancelled}
           footer={null}

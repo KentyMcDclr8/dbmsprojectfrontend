@@ -10,11 +10,12 @@ import EmployeeHome from './Components/Employee/EmployeeHome'
 const App = () => {
   const [activePage, setActivePage] = useState(<LoginPage />)
   const [page, setPage] = useState('Login')
+  const [userData, setUserData] = useState(null)
 
   useEffect(() => {
     switch (page) {
       case 'Login':
-        setActivePage(<LoginPage changePage={setPage} />)
+        setActivePage(<LoginPage changePage={setPage} setUserData={setUserData} />)
         break
       case 'Customer Sign-up':
         setActivePage(<CustomerSignUp changePage={setPage} />)
@@ -23,10 +24,10 @@ const App = () => {
         setActivePage(<CourierSignUp changePage={setPage} />)
         break
       case 'User':
-        setActivePage(<UserHome logoutHandler={setPage} />)
+        setActivePage(<UserHome logoutHandler={setPage} user={userData} />)
         break
       case 'Employee':
-        setActivePage(<EmployeeHome logoutHandler={setPage} />)
+        setActivePage(<EmployeeHome logoutHandler={setPage} employee={userData} />)
         break
       case 'Admin':
         setActivePage(<UserHome logoutHandler={setPage} />)

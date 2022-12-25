@@ -84,12 +84,12 @@ const AddPackage = ({ user, goBack }) => {
           <Input placeholder='Enter Weight in grams' maxLength={255} />
         </Form.Item>
         <Form.Item
-          label='Dimensions'
-          key='dimensions'
-          name='dimensions'
-          rules={[{ required: true, message: 'Missing Dimensions' }]}
+          label='Volume'
+          key='volume'
+          name='volume'
+          rules={[{ required: true, message: 'Missing Volume' }]}
         >
-          <Input placeholder='Enter Dimension HH - WW - BB in centimeters' maxLength={255} />
+          <Input placeholder='Enter Volumne in meter cube' maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Recipient'

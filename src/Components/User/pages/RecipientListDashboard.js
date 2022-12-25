@@ -103,13 +103,13 @@ const RecipientListDashboard = (user) => {
   const reset = () => {
     setData([
       { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
     ])
 
     let cols = []

@@ -4,7 +4,7 @@ import { InboxOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 // import { useCallback, useState } from 'react'
 
-const UserHomeDashboard = ({ addPackage }) => {
+const UserHomeDashboard = ({ user, addPackage }) => {
   const gotoPackage = () => {
     // TODO
     addPackage()
@@ -43,7 +43,7 @@ const UserHomeDashboard = ({ addPackage }) => {
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Welcome user.name</h1>
+        <h1 style={{ fontSize: 50 }}>Welcome {user == null ? null : user.name}</h1>
 
       </Row>
 

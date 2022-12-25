@@ -1,21 +1,26 @@
 
-import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton, Space, Table, Tag, Form, Input } from 'antd'
-import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined, FilterOutlined, PlusOutlined, FileExclamationOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
+import { Row, Col, Modal, Button, Select, Form, message, Popconfirm, Tooltip, Skeleton, Space, Table, Input, Radio } from 'antd'
+import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import DataTable from '../../DataTable'
 import { getSearchProps } from '../../SearchHelper'
 
 const { Option } = Select
-const { TextArea } = Input
 
-const ActiveShipmentsDashboard = ({ user, addPackage }) => {
+const CourierAccountsDashboard = (user) => {
+  const [form] = Form.useForm()
+  const [formUpdate] = Form.useForm()
+
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
   const [filteringValue, setFilteringValue] = useState([]) // Array of selected column keys
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false)
 
-  const [form] = Form.useForm()
+  const [addModal, setAddModal] = useState(false)
+  const [updateModal, setUpdateModal] = useState(false)
+  const [activeRecord, setActiveRecord] = useState(null)
+
   // Pagination useStates
   const defaultPageSize = 10
   const [totalCount, setTotalCount] = useState(1)
@@ -26,9 +31,6 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
 
-  const [complaintModal, setComplaintModal] = useState(false)
-  const [activePackageId, setActivePackageId] = useState(null)
-
   const actionColumn = {
 
     title: 'Action',
@@ -37,49 +39,22 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     width: 100,
     render: (_, record) => (
       <Space size='middle'>
-        <Popconfirm
-          title='Are you sure you want to put this package on Hold'
-          onConfirm={() => onHoldHandler(record.id)}
-        >
-          <HistoryOutlined style={{ color: '#fcb020' }} />
-        </Popconfirm>
+
         <Tooltip
-          title='Submit Complaint'
+          title='Edit Courier'
         >
-          <FileExclamationOutlined style={{ color: '#dd525f' }} onClick={() => onComplaintHandler(record.id)} />
+          <EditOutlined style={{ color: '#2196fc' }} onClick={() => onEditRowHandler(record)} />
         </Tooltip>
+
+        <Popconfirm
+          title='Are you sure you want to delete this Courier'
+          onConfirm={() => onRemoveRecordHandler(record.id)}
+        >
+          <DeleteOutlined style={{ color: '#ce1a2a' }} />
+        </Popconfirm>
 
       </Space>
     )
-  }
-
-  const tagSelector = (text) => {
-    console.log('text', text)
-    if (String(text).includes('Awaiting Pick-up')) {
-      return (
-        <Tag icon={<ExportOutlined />} color='green'>
-          Awaiting Pick-up
-        </Tag>
-      )
-    } else if (String(text).includes('On Hold')) {
-      return (
-        <Tag icon={<ExclamationCircleOutlined />} color='yellow'>
-          On Hold
-        </Tag>
-      )
-    } else if (String(text).includes('To Be Assigned')) {
-      return (
-        <Tag icon={<InboxOutlined />} color='volcano'>
-          To Be Assigned
-        </Tag>
-      )
-    } else {
-      return (
-        <Tag icon={<SyncOutlined />} color='blue'>
-          On the way
-        </Tag>
-      )
-    }
   }
 
   const columns = [
@@ -92,7 +67,7 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
       type: 'number'
     },
     {
-      title: 'Recipient Name',
+      title: 'Name',
       id: 'name',
       dataIndex: 'name',
       key: 'name',
@@ -100,49 +75,41 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
       type: 'varchar'
     },
     {
-      title: 'Weight',
-      id: 'weight',
-      dataIndex: 'weight',
-      key: 'weight',
-      name: 'weight',
+      title: 'Address',
+      id: 'address',
+      dataIndex: 'address',
+      key: 'address',
+      name: 'address',
       type: 'varchar'
     },
     {
-      title: 'Dimensions',
-      id: 'dimensions',
-      dataIndex: 'dimensions',
-      key: 'dimensions',
-      name: 'dimensions',
+      title: 'Phone',
+      id: 'phone',
+      dataIndex: 'phone',
+      key: 'phone',
+      name: 'phone',
+      type: 'number'
+    },
+    {
+      title: 'Email',
+      id: 'email',
+      dataIndex: 'email',
+      key: 'email',
+      name: 'email',
       type: 'varchar'
-    },
-    {
-      title: 'Type',
-      id: 'type',
-      dataIndex: 'type',
-      key: 'type',
-      name: 'type',
-      type: 'type'
-    },
-    {
-      title: 'Status',
-      id: 'status',
-      dataIndex: 'status',
-      key: 'status',
-      name: 'status',
-      type: 'status',
-      render: (text) => tagSelector(text)
     }
   ]
 
   const reset = () => {
     setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
     ])
 
     let cols = []
@@ -161,11 +128,10 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     reset()
   }, [])
 
-  const onHoldHandler = (id) => {
+  const onEditRowHandler = (record) => {
     // TODO
-
-    setActivePackageId(id)
-    message.success('Package Hold Request Sent Successfully')
+    setActiveRecord(record)
+    setUpdateModal(true)
   }
 
   const handleSorting = () => {
@@ -178,13 +144,29 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
   }
 
-  const getRecipients = () => {
+  const getCouriers = () => {
     // TODO
     return 353
   }
 
   const onAddToTable = () => {
     // TODO
+    setAddModal(true)
+    form.resetFields()
+  }
+
+  const addApiCall = () => {
+    // TODO
+    setAddModal(false)
+    form.resetFields()
+    message.success('Courier Added Successfully')
+  }
+
+  const updateApiCall = () => {
+    // TODO
+    setUpdateModal(false)
+    form.resetFields()
+    message.success('Courier Information Updated Successfully')
   }
 
   // column filter/visibility functioanlity
@@ -210,50 +192,40 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
               // actionColumn
             ]
     setFilteredColumns([...cols, actionColumn])
-    getRecipients()
+    getCouriers()
   }
 
-  const onComplaintHandler = (id) => {
+  const handleCancelAdd = () => {
+    setAddModal(false)
+  }
+
+  const handleCancelUpdate = () => {
+    setUpdateModal(false)
+  }
+  const onRemoveRecordHandler = (id) => {
     console.log(`Record with id:${id} is deleted`)
-    setActivePackageId(id)
-    setComplaintModal(true)
-    form.resetFields()
+    message.success(`Courier with ID:${id} is deleted`)
     // setIsLoading(true)
-    // deleteRecipient( id)
+    // deleteCourier( id)
     //   .then(_ => {
     //     message.success(`Record with id:${id} is deleted`)
     //   })
     //   .catch(e => message.error(e.message))
     //   .finally(() => {
     //     setIsLoading(false)
-    //     getRecipients()
+    //     getCouriers()
     // })
-  }
-
-  const complaintApiCall = () => {
-    // TODO
-    setComplaintModal(false)
-    form.resetFields()
-    message.success('Complaint Sent Successfully')
-  }
-
-  const complaintCancelled = () => {
-    setComplaintModal(false)
-    form.resetFields()
   }
 
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Active Shipments</h1>
+        <h1 style={{ fontSize: 50 }}>Courier Accounts</h1>
       </Row>
       <Row>
-        <Col offset={18} span={5}>
+        <Col offset={20} span={5}>
           <Button onClick={() => showFilter()} type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
-          </Button>
-          <Button onClick={() => addPackage()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Package
           </Button>
         </Col>
 
@@ -315,60 +287,86 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
           </Select>
         </Modal>
         <Modal
-          title='Add New Recipient'
-          visible={complaintModal}
-          onCancel={complaintCancelled}
+          title='Update Courier Information'
+          visible={updateModal}
+          onCancel={handleCancelUpdate}
           footer={null}
           width={800}
         >
           <Form
             style={{ marginTop: '45px' }}
             name='User Info'
-            form={form}
+            form={formUpdate}
             layout='horizontal'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            onFinish={complaintApiCall}
+            onFinish={updateApiCall}
             autoComplete='off'
             colon
           >
             <Form.Item
-              label='Package ID'
-              key='packageId'
-              name='packageId'
-
-              initialValue={activePackageId === null ? null : activePackageId}
+              label='Name'
+              key='name'
+              name='name'
+              initialValue={activeRecord === null ? null : activeRecord.name}
+              rules={[{ required: true, message: 'Missing Name' }]}
             >
-              <Input disabled />
+              <Input maxLength={255} />
             </Form.Item>
             <Form.Item
-              label='Details'
-              key='details'
-              name='details'
-              rules={[{ required: true, message: 'Missing Details' }]}
+              label='Email'
+              key='email'
+              name='email'
+              initialValue={activeRecord === null ? null : activeRecord.email}
+              rules={[{ required: true, message: 'Missing Email' }]}
             >
-              <TextArea rows={3} />
+              <Input maxLength={255} />
             </Form.Item>
             <Form.Item
-              label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
-              rules={[{ required: true, message: 'Missing Complaint Type' }]}
+              label='Phone'
+              key='phone'
+              name='phone'
+              initialValue={activeRecord === null ? null : activeRecord.phone}
+              rules={[{ required: true, message: 'Missing Phone' }]}
             >
-              <Select placeholder='Choose Complaint Type'>
-                {[
-                  'Incorrect Status',
-                  'Late Delivery',
-                  'Wrong Package Deliveried',
-                  'Other'
-                ].map(type => (
-                  <Select.Option key={type} value={type}>
-                    {type}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Input type='phone' maxLength={255} />
             </Form.Item>
-
+            <Form.Item
+              label='Building No'
+              key='buildingNo'
+              name='buildingNo'
+              initialValue={activeRecord === null ? null : activeRecord.buildingNo}
+              rules={[{ required: true, message: 'Missing Building No' }]}
+            >
+              <Input maxLength={255} />
+            </Form.Item>
+            <Form.Item
+              label='Street No'
+              key='streetNo'
+              name='streetNo'
+              initialValue={activeRecord === null ? null : activeRecord.streetNo}
+              rules={[{ required: true, message: 'Missing Street No' }]}
+            >
+              <Input maxLength={255} />
+            </Form.Item>
+            <Form.Item
+              label='City'
+              key='city'
+              name='city'
+              initialValue={activeRecord === null ? null : activeRecord.city}
+              rules={[{ required: true, message: 'Missing City' }]}
+            >
+              <Input maxLength={255} />
+            </Form.Item>
+            <Form.Item
+              label='Province'
+              key='province'
+              name='province'
+              initialValue={activeRecord === null ? null : activeRecord.province}
+              rules={[{ required: true, message: 'Missing Province' }]}
+            >
+              <Input maxLength={255} />
+            </Form.Item>
             <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
               <Button
                 style={{
@@ -383,11 +381,10 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
           </Form>
         </Modal>
-
       </Row>
     </>
 
   )
 }
 
-export default ActiveShipmentsDashboard
+export default CourierAccountsDashboard

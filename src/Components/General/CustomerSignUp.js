@@ -165,7 +165,7 @@ const CustomerSignUp = ({ changePage }) => {
 
         }}
       >
-        Bilsend ©2022 Created by Tumharay Abu
+        BilCargo ©2022
       </Footer>
     </Layout>
   )

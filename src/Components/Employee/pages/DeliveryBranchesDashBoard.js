@@ -1,20 +1,25 @@
 
-import { Row, Col, Modal, Button, Select, message, Form, Input, Tooltip, Skeleton, Space, Table, Tag, Radio } from 'antd'
-import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, ExportOutlined, FilterOutlined, PlusOutlined, FileExclamationOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
+import { Row, Col, Modal, Button, Select, Form, message, Popconfirm, Tooltip, Skeleton, Space, Table, Input, Radio } from 'antd'
+import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import DataTable from '../../DataTable'
 import { getSearchProps } from '../../SearchHelper'
 
 const { Option } = Select
-const { TextArea } = Input
 
-const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
+const DeliveryBranchDashBoard = (user) => {
   const [form] = Form.useForm()
+  const [formUpdate] = Form.useForm()
+
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
   const [filteringValue, setFilteringValue] = useState([]) // Array of selected column keys
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false)
+
+  const [addModal, setAddModal] = useState(false)
+  const [updateModal, setUpdateModal] = useState(false)
+  const [activeRecord, setActiveRecord] = useState(null)
 
   // Pagination useStates
   const defaultPageSize = 10
@@ -22,73 +27,9 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentPageSize, setCurrentPageSize] = useState(defaultPageSize)
 
-  const [complaintModal, setComplaintModal] = useState(false)
-  const [activePackageId, setActivePackageId] = useState(null)
   // Table
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
-
-  const actionColumn = {
-
-    title: 'Action',
-    dataIndex: '_action',
-    fixed: 'right',
-    width: 100,
-    render: (_, record) => (
-      <Space size='middle'>
-
-        <Tooltip
-          title='Submit Complaint'
-        >
-          <FileExclamationOutlined style={{ color: '#dd525f' }} onClick={() => onComplaintHandler(record.id)} />
-        </Tooltip>
-
-      </Space>
-    )
-  }
-
-  const onComplaintHandler = (id) => {
-    console.log(`Record with id:${id} is deleted`)
-    setActivePackageId(id)
-    setComplaintModal(true)
-    // setIsLoading(true)
-    // deleteRecipient( id)
-    //   .then(_ => {
-    //     message.success(`Record with id:${id} is deleted`)
-    //   })
-    //   .catch(e => message.error(e.message))
-    //   .finally(() => {
-    //     setIsLoading(false)
-    //     getRecipients()
-    // })
-  }
-
-  const complaintApiCall = () => {
-    // TODO
-    setComplaintModal(false)
-    message.success('Complaint Sent Successfully')
-  }
-
-  const complaintCancelled = () => {
-    setComplaintModal(false)
-  }
-
-  const tagSelector = (text) => {
-    console.log('text', text)
-    if (String(text).includes('Delivered')) {
-      return (
-        <Tag icon={<CheckCircleOutlined />} color='green'>
-          Delivered
-        </Tag>
-      )
-    } else {
-      return (
-        <Tag icon={<CloseCircleOutlined />} color='volcano'>
-          Cancelled
-        </Tag>
-      )
-    }
-  }
 
   const columns = [
     {
@@ -100,57 +41,30 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
       type: 'number'
     },
     {
-      title: 'Recipient Name',
-      id: 'name',
-      dataIndex: 'name',
-      key: 'name',
-      name: 'name',
+      title: 'District',
+      id: 'district',
+      dataIndex: 'district',
+      key: 'district',
+      name: 'district',
       type: 'varchar'
     },
     {
-      title: 'Weight',
-      id: 'weight',
-      dataIndex: 'weight',
-      key: 'weight',
-      name: 'weight',
-      type: 'varchar'
-    },
-    {
-      title: 'Dimensions',
-      id: 'dimensions',
-      dataIndex: 'dimensions',
-      key: 'dimensions',
-      name: 'dimensions',
-      type: 'varchar'
-    },
-    {
-      title: 'Type',
-      id: 'type',
-      dataIndex: 'type',
-      key: 'type',
-      name: 'type',
-      type: 'type'
-    },
-    {
-      title: 'Status',
-      id: 'status',
-      dataIndex: 'status',
-      key: 'status',
-      name: 'status',
-      type: 'status',
-      render: (text) => tagSelector(text)
+      title: 'Courier Count',
+      id: 'courierCount',
+      dataIndex: 'courierCount',
+      key: 'courierCount',
+      name: 'courierCount',
+      type: 'number'
     }
   ]
 
   const reset = () => {
     setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Cancelled' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Cancelled' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' }
+      { district: 'Bilkent', id: 1, courierCount: '5' },
+      { district: 'Cankaya', id: 2, courierCount: '3' },
+      { district: 'Istanbul', id: 3, courierCount: '2' },
+      { district: 'Tunus', id: 4, courierCount: '15' },
+      { district: 'Metro', id: 5, courierCount: '5' }
     ])
 
     let cols = []
@@ -160,7 +74,7 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
         ...getSearchProps(column.name, column.type, searchHandler)
       }
     })
-    setFilteredColumns([...cols, actionColumn])
+    setFilteredColumns([...cols])
 
     // setFilteredColumns(columns)
   }
@@ -169,9 +83,10 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
     reset()
   }, [])
 
-  const onEditRowHandler = () => {
+  const onEditRowHandler = (record) => {
     // TODO
-
+    setActiveRecord(record)
+    setUpdateModal(true)
   }
 
   const handleSorting = () => {
@@ -191,6 +106,15 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
 
   const onAddToTable = () => {
     // TODO
+    setAddModal(true)
+    form.resetFields()
+  }
+
+  const addApiCall = () => {
+    // TODO
+    setAddModal(false)
+    form.resetFields()
+    message.success('Delivery Branch Added Successfully')
   }
 
   // column filter/visibility functioanlity
@@ -215,22 +139,44 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
               ...columns.filter(col => filteringValue.includes(`${col.key}`))
               // actionColumn
             ]
-    setFilteredColumns([...cols, actionColumn])
+    setFilteredColumns([...cols])
     getRecipients()
+  }
+
+  const handleCancelAdd = () => {
+    setAddModal(false)
+  }
+
+  const handleCancelUpdate = () => {
+    setUpdateModal(false)
+  }
+  const onRemoveRecordHandler = (id) => {
+    console.log(`Record with id:${id} is deleted`)
+    message.success(`Recipient with ID:${id} is deleted`)
+    // setIsLoading(true)
+    // deleteRecipient( id)
+    //   .then(_ => {
+    //     message.success(`Record with id:${id} is deleted`)
+    //   })
+    //   .catch(e => message.error(e.message))
+    //   .finally(() => {
+    //     setIsLoading(false)
+    //     getRecipients()
+    // })
   }
 
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Shipments History</h1>
+        <h1 style={{ fontSize: 50 }}>Delivery Branches</h1>
       </Row>
       <Row>
-        <Col offset={18} span={5}>
+        <Col offset={17} span={6}>
           <Button onClick={() => showFilter()} type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
           </Button>
-          <Button onClick={() => addPackage()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Package
+          <Button onClick={() => onAddToTable()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
+            Create New Delivery Branch
           </Button>
         </Col>
 
@@ -292,58 +238,30 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
           </Select>
         </Modal>
         <Modal
-          title='Add New Recipient'
-          visible={complaintModal}
-          onCancel={complaintCancelled}
+          title='Create New Delivery Branch'
+          visible={addModal}
+          onCancel={handleCancelAdd}
           footer={null}
           width={800}
         >
           <Form
             style={{ marginTop: '45px' }}
-            name='User Info'
+            name='Create New Delivery Branch'
             form={form}
             layout='horizontal'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            onFinish={complaintApiCall}
+            onFinish={addApiCall}
             autoComplete='off'
             colon
           >
             <Form.Item
-              label='Package ID'
-              key='packageId'
-              name='packageId'
-
-              initialValue={activePackageId === null ? null : activePackageId}
+              label='District'
+              key='district'
+              name='district'
+              rules={[{ required: true, message: 'Missing District' }]}
             >
-              <Input disabled />
-            </Form.Item>
-            <Form.Item
-              label='Details'
-              key='details'
-              name='details'
-              rules={[{ required: true, message: 'Missing Details' }]}
-            >
-              <TextArea rows={3} />
-            </Form.Item>
-            <Form.Item
-              label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
-              rules={[{ required: true, message: 'Missing Complaint Type' }]}
-            >
-              <Select placeholder='Choose Complaint Type'>
-                {[
-                  'Incorrect Status',
-                  'Late Delivery',
-                  'Wrong Package Deliveried',
-                  'Other'
-                ].map(type => (
-                  <Select.Option key={type} value={type}>
-                    {type}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Input maxLength={255} />
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
@@ -366,4 +284,4 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
   )
 }
 
-export default ShipmentsHistoryDashboard
+export default DeliveryBranchDashBoard

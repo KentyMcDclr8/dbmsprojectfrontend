@@ -23,7 +23,7 @@ const commonHeader = {
 async function _post (url, data) {
   return await fetch(url, {
     method: 'POST',
-    headers: {commonHeader},
+    headers: { commonHeader },
     body: JSON.stringify(data)
   })
 }
@@ -72,4 +72,3 @@ export async function deleteFetcher (url, isRaw = true) {
   await _handleError(res)
   return isRaw ? res : res.json()
 }
-

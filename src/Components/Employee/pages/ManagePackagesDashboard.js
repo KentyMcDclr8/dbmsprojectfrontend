@@ -1,6 +1,6 @@
 
 import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton, Space, Table, Tag, Form, Input } from 'antd'
-import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined, FilterOutlined, PlusOutlined, FileExclamationOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
+import { SyncOutlined, InboxOutlined, CarOutlined, ExportOutlined, FilterOutlined, EditOutlined, ExclamationCircleOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import DataTable from '../../DataTable'
@@ -9,7 +9,7 @@ import { getSearchProps } from '../../SearchHelper'
 const { Option } = Select
 const { TextArea } = Input
 
-const ActiveShipmentsDashboard = ({ user, addPackage }) => {
+const ManagePackagesDashboard = ({ employee, addPackage }) => {
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
   const [filteringValue, setFilteringValue] = useState([]) // Array of selected column keys
@@ -26,8 +26,8 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
 
-  const [complaintModal, setComplaintModal] = useState(false)
-  const [activePackageId, setActivePackageId] = useState(null)
+  const [editModal, setEditModal] = useState(false)
+  const [activePackage, setActivePackage] = useState(null)
 
   const actionColumn = {
 
@@ -37,16 +37,15 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     width: 100,
     render: (_, record) => (
       <Space size='middle'>
-        <Popconfirm
-          title='Are you sure you want to put this package on Hold'
-          onConfirm={() => onHoldHandler(record.id)}
-        >
-          <HistoryOutlined style={{ color: '#fcb020' }} />
-        </Popconfirm>
         <Tooltip
-          title='Submit Complaint'
+          title='Assign Courier'
         >
-          <FileExclamationOutlined style={{ color: '#dd525f' }} onClick={() => onComplaintHandler(record.id)} />
+          <CarOutlined style={{ color: 'green' }} onClick={() => onAssignCourier(record)} />
+        </Tooltip>
+        <Tooltip
+          title='Update Status'
+        >
+          <EditOutlined style={{ color: '#2196fc' }} onClick={() => onEditHandler(record)} />
         </Tooltip>
 
       </Space>
@@ -136,13 +135,13 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
   const reset = () => {
     setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
+      { name: 'ather', id: 12, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
+      { name: 'ather', id: 13, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
+      { name: 'ather', id: 111, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
+      { name: 'ather', id: 15, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
+      { name: 'ather', id: 16, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
+      { name: 'ather', id: 17, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
+      { name: 'ather', id: 11, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
     ])
 
     let cols = []
@@ -161,10 +160,11 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     reset()
   }, [])
 
-  const onHoldHandler = (id) => {
+  const onAssignCourier = (record) => {
     // TODO
-
-    setActivePackageId(id)
+    console.log('record')
+    setActivePackage(record)
+    form.resetFields()
     message.success('Package Hold Request Sent Successfully')
   }
 
@@ -213,11 +213,11 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     getRecipients()
   }
 
-  const onComplaintHandler = (id) => {
-    console.log(`Record with id:${id} is deleted`)
-    setActivePackageId(id)
-    setComplaintModal(true)
+  const onEditHandler = (record) => {
+    console.log('record', record)
+    setActivePackage(record)
     form.resetFields()
+    setEditModal(true)
     // setIsLoading(true)
     // deleteRecipient( id)
     //   .then(_ => {
@@ -230,33 +230,29 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     // })
   }
 
-  const complaintApiCall = () => {
+  const editApiCall = () => {
     // TODO
-    setComplaintModal(false)
+    setEditModal(false)
     form.resetFields()
-    message.success('Complaint Sent Successfully')
+    message.success('Status Updated Successfully')
   }
 
-  const complaintCancelled = () => {
-    setComplaintModal(false)
+  const editCancelled = () => {
+    setEditModal(false)
     form.resetFields()
   }
 
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Active Shipments</h1>
+        <h1 style={{ fontSize: 50 }}>Manage Packages</h1>
       </Row>
       <Row>
-        <Col offset={18} span={5}>
+        <Col offset={20} span={4}>
           <Button onClick={() => showFilter()} type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
           </Button>
-          <Button onClick={() => addPackage()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Package
-          </Button>
         </Col>
-
         <Row>
           <Col>
             {!data
@@ -315,20 +311,20 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
           </Select>
         </Modal>
         <Modal
-          title='Create Complaint'
-          visible={complaintModal}
-          onCancel={complaintCancelled}
+          title='Edit Status'
+          visible={editModal}
+          onCancel={editCancelled}
           footer={null}
           width={800}
         >
           <Form
             style={{ marginTop: '45px' }}
-            name='User Info'
+            name='Edit Status'
             form={form}
             layout='horizontal'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            onFinish={complaintApiCall}
+            onFinish={editApiCall}
             autoComplete='off'
             colon
           >
@@ -337,30 +333,25 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
               key='packageId'
               name='packageId'
 
-              initialValue={activePackageId === null ? null : activePackageId}
+              initialValue={activePackage === null ? null : activePackage.id}
             >
               <Input disabled />
             </Form.Item>
             <Form.Item
-              label='Details'
-              key='details'
-              name='details'
-              rules={[{ required: true, message: 'Missing Details' }]}
+              label='Status'
+              key='status'
+              name='status'
+              initialValue={activePackage === null ? null : activePackage.status}
+              rules={[{ required: true, message: 'Missing Status' }]}
             >
-              <TextArea rows={3} />
-            </Form.Item>
-            <Form.Item
-              label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
-              rules={[{ required: true, message: 'Missing Complaint Type' }]}
-            >
-              <Select placeholder='Choose Complaint Type'>
+              <Select placeholder='Choose Package Status'>
                 {[
-                  'Incorrect Status',
-                  'Late Delivery',
-                  'Wrong Package Deliveried',
-                  'Other'
+                  'To be assigned',
+                  'Awaiting Pick-up',
+                  'On the way',
+                  'Cancelled',
+                  'On Hold',
+                  'Delivered'
                 ].map(type => (
                   <Select.Option key={type} value={type}>
                     {type}
@@ -383,11 +374,74 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
           </Form>
         </Modal>
+        <Modal
+          title='Edit Status'
+          visible={editModal}
+          onCancel={editCancelled}
+          footer={null}
+          width={800}
+        >
+          <Form
+            style={{ marginTop: '45px' }}
+            name='Edit Status'
+            form={form}
+            layout='horizontal'
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 17 }}
+            onFinish={editApiCall}
+            autoComplete='off'
+            colon
+          >
+            <Form.Item
+              label='Package ID'
+              key='packageId'
+              name='packageId'
 
+              initialValue={activePackage === null ? null : activePackage.id}
+            >
+              <Input disabled />
+            </Form.Item>
+            <Form.Item
+              label='Status'
+              key='status'
+              name='status'
+              initialValue={activePackage === null ? null : activePackage.status}
+              rules={[{ required: true, message: 'Missing Status' }]}
+            >
+              <Select placeholder='Choose Package Status'>
+                {[
+                  'To be assigned',
+                  'Awaiting Pick-up',
+                  'On the way',
+                  'Cancelled',
+                  'On Hold',
+                  'Delivered'
+                ].map(type => (
+                  <Select.Option key={type} value={type}>
+                    {type}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
+              <Button
+                style={{
+                  marginTop: '10px',
+                  backgroundColor: '#1890ff'
+                }}
+                block type='primary' htmlType='submit'
+              >
+                Submit
+              </Button>
+            </Form.Item>
+
+          </Form>
+        </Modal>
       </Row>
     </>
 
   )
 }
 
-export default ActiveShipmentsDashboard
+export default ManagePackagesDashboard

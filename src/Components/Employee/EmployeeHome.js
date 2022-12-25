@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { CreditCardOutlined, ExclamationCircleOutlined, WindowsOutlined, ProfileOutlined, InboxOutlined, HistoryOutlined, UsergroupAddOutlined } from '@ant-design/icons'
+import { FileExclamationOutlined, FileOutlined, BranchesOutlined, WindowsOutlined, ProfileOutlined, InboxOutlined, HistoryOutlined, UsergroupAddOutlined } from '@ant-design/icons'
 import { Button, message, Layout, Menu, Row, theme } from 'antd'
 import EmployeeHomeDashboard from './pages/EmployeeHomeDashboard'
 import EmployeeInfoDashboard from './pages/EmployeeInfoDashboard'
-import RecipientListDashboard from './pages/RecipientListDashboard'
-import ActiveShipmentsDashboard from './pages/ActiveShipmentsDashboard'
-import ShipmentsHistoryDashboard from './pages/ShipmentsHistoryDashboard'
-import AddPackage from './pages/AddPackage'
-import PaymentDashboard from './pages/PaymentDashboard'
-import ComplaintsDashboard from './pages/ComplaintsDashboard'
+import CourierApplicationsDashboard from './pages/CourierApplicationsDashboard'
+import CourierAccountsDashboard from './pages/CourierAccountsDashboard'
+import ManagePackagesDashboard from './pages/ManagePackagesDashboard'
+import ManageComplaintsDashBoard from './pages/ManageComplaintsDashBoard'
+import DeliveryBranchesDashBoard from './pages/DeliveryBranchesDashBoard'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -24,33 +23,33 @@ const MenuItems = [
     label: 'Employee Info'
   },
   {
-    key: 'Recipients List',
+    key: 'Courier Applications',
+    icon: React.createElement(FileOutlined),
+    label: 'Courier Applications'
+  },
+  {
+    key: 'Courier Accounts',
     icon: React.createElement(UsergroupAddOutlined),
-    label: 'Recipients List'
+    label: 'Courier Accounts'
   },
   {
-    key: 'Active Shipments',
+    key: 'Manage Packages',
     icon: React.createElement(InboxOutlined),
-    label: 'Active Shipments'
+    label: 'Manage Packages'
   },
   {
-    key: 'Shipment History',
-    icon: React.createElement(HistoryOutlined),
-    label: 'Shipment History'
+    key: 'Manage Complaints',
+    icon: React.createElement(FileExclamationOutlined),
+    label: 'Manage Complaints'
   },
   {
-    key: 'Payment Details',
-    icon: React.createElement(CreditCardOutlined),
-    label: 'Payment Details'
-  },
-  {
-    key: 'Complaints',
-    icon: React.createElement(ExclamationCircleOutlined),
-    label: 'Complaints'
+    key: 'Delivery Branches',
+    icon: React.createElement(BranchesOutlined),
+    label: 'Delivery Branches'
   }
 ]
 
-const EmployeeHome = ({ logoutHandler }) => {
+const EmployeeHome = ({ employee, logoutHandler }) => {
   const [currentDashboard, setCurrentDashboard] = useState(<EmployeeHomeDashboard />)
   const [page, setPage] = useState('Dashboard')
 
@@ -59,62 +58,58 @@ const EmployeeHome = ({ logoutHandler }) => {
   } = theme.useToken()
 
   const goBack = () => {
-    setCurrentDashboard(<EmployeeHomeDashboard />)
-  }
-
-  const addPackage = () => {
-    setCurrentDashboard(<AddPackage goBack={goBack} />)
+    setCurrentDashboard(<EmployeeHomeDashboard employee={employee} />)
   }
 
   useEffect(() => {
     switch (page) {
       case 'Dashboard':
-        setCurrentDashboard(<EmployeeHomeDashboard addPackage={addPackage} />)
+        setCurrentDashboard(<EmployeeHomeDashboard employee={employee} />)
         break
       case 'Employee Info':
-        setCurrentDashboard(<EmployeeInfoDashboard />)
+        setCurrentDashboard(<EmployeeInfoDashboard employee={employee} />)
         break
-      case 'Recipients List':
-        setCurrentDashboard(<RecipientListDashboard />)
+      case 'Courier Applications':
+        setCurrentDashboard(<CourierApplicationsDashboard employee={employee} />)
         break
-      case 'Add Package':
-        setCurrentDashboard(<AddPackage goBack={goBack} />)
+      case 'Courier Accounts':
+        setCurrentDashboard(<CourierAccountsDashboard employee={employee} />)
         break
-      // case "Shipment History":
-      //   setCurrentDashboard(<EmployeeHomeDashboard/>)
-      //   break;
-      // case "Payment Details":
-      //   setCurrentDashboard(<PaymentDashboard/>)
-      //   break;
-      // case "Complaints":
-      //   setCurrentDashboard(<ComplaintsDashboard/>)
+      case 'Manage Packages':
+        setCurrentDashboard(<ManagePackagesDashboard employee={employee} />)
+        break
+      case 'Manage Complaints':
+        setCurrentDashboard(<ManageComplaintsDashBoard employee={employee} />)
+        break
+      case 'Delivery Branches':
+        setCurrentDashboard(<DeliveryBranchesDashBoard employee={employee} />)
     }
 
-    console.log('page changes')
+    console.log('page changed')
   }, [page])
 
   const pageChangeHandler = (menuItem) => {
     switch (menuItem.key) {
       case 'Dashboard':
-        setCurrentDashboard(<EmployeeHomeDashboard addPackage={addPackage} />)
+        setCurrentDashboard(<EmployeeHomeDashboard employee={employee} />)
         break
       case 'Employee Info':
-        setCurrentDashboard(<EmployeeInfoDashboard />)
+        setCurrentDashboard(<EmployeeInfoDashboard employee={employee} />)
         break
-      case 'Recipients List':
-        setCurrentDashboard(<RecipientListDashboard />)
+      case 'Courier Applications':
+        setCurrentDashboard(<CourierApplicationsDashboard employee={employee} />)
         break
-      case 'Active Shipments':
-        setCurrentDashboard(<ActiveShipmentsDashboard addPackage={addPackage} />)
+      case 'Courier Accounts':
+        setCurrentDashboard(<CourierAccountsDashboard employee={employee} />)
         break
-      case 'Shipment History':
-        setCurrentDashboard(<ShipmentsHistoryDashboard addPackage={addPackage} />)
+      case 'Manage Packages':
+        setCurrentDashboard(<ManagePackagesDashboard employee={employee} />)
         break
-      case 'Payment Details':
-        setCurrentDashboard(<PaymentDashboard />)
+      case 'Manage Complaints':
+        setCurrentDashboard(<ManageComplaintsDashBoard employee={employee} />)
         break
-      case 'Complaints':
-        setCurrentDashboard(<ComplaintsDashboard />)
+      case 'Delivery Branches':
+        setCurrentDashboard(<DeliveryBranchesDashBoard employee={employee} />)
     }
   }
 
@@ -158,8 +153,9 @@ const EmployeeHome = ({ logoutHandler }) => {
             >
               <svg width='131' height='132' viewBox='0 0 131 132' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M128 66C128 100.815 99.9963 129 65.5 129C31.0037 129 3 100.815 3 66C3 31.1845 31.0037 3 65.5 3C99.9963 3 128 31.1845 128 66Z' fill='white' stroke='#1890FF' stroke-width='6' />
-                <path d='M91.6801 85.2563C90.2547 81.7654 88.1862 78.5946 85.5899 75.9203C83.0014 73.2384 79.9351 71.1 76.5604 69.6234C76.5302 69.6078 76.4999 69.6 76.4697 69.5844C81.1771 66.0688 84.2374 60.3422 84.2374 53.8813C84.2374 43.1781 75.8501 34.5063 65.4983 34.5063C55.1464 34.5063 46.7592 43.1781 46.7592 53.8813C46.7592 60.3422 49.8194 66.0688 54.5268 69.5922C54.4966 69.6078 54.4664 69.6156 54.4362 69.6313C51.051 71.1078 48.0135 73.225 45.4067 75.9281C42.8127 78.6044 40.7446 81.7748 39.3165 85.2641C37.9135 88.6801 37.1568 92.3425 37.0874 96.0531C37.0854 96.1365 37.0995 96.2195 37.129 96.2971C37.1585 96.3747 37.2027 96.4455 37.259 96.5052C37.3154 96.5649 37.3827 96.6124 37.457 96.6447C37.5314 96.6771 37.6112 96.6938 37.6919 96.6938H42.2255C42.558 96.6938 42.8225 96.4203 42.83 96.0844C42.9812 90.0531 45.3235 84.4047 49.4643 80.1234C53.7486 75.6938 59.4383 73.2563 65.4983 73.2563C71.5582 73.2563 77.248 75.6938 81.5323 80.1234C85.673 84.4047 88.0154 90.0531 88.1665 96.0844C88.1741 96.4281 88.4385 96.6938 88.771 96.6938H93.3046C93.3853 96.6938 93.4652 96.6771 93.5395 96.6447C93.6139 96.6124 93.6812 96.5649 93.7375 96.5052C93.7939 96.4455 93.8381 96.3747 93.8675 96.2971C93.897 96.2195 93.9112 96.1365 93.9091 96.0531C93.8336 92.3188 93.0855 88.6859 91.6801 85.2563V85.2563ZM65.4983 67.3188C62.03 67.3188 58.7658 65.9203 56.3101 63.3813C53.8544 60.8422 52.5018 57.4672 52.5018 53.8813C52.5018 50.2953 53.8544 46.9203 56.3101 44.3813C58.7658 41.8422 62.03 40.4438 65.4983 40.4438C68.9665 40.4438 72.2307 41.8422 74.6865 44.3813C77.1422 46.9203 78.4947 50.2953 78.4947 53.8813C78.4947 57.4672 77.1422 60.8422 74.6865 63.3813C72.2307 65.9203 68.9665 67.3188 65.4983 67.3188Z' fill='#1890FF' />
+                <path d='M93.0522 44.3086C93.0144 44.2383 92.9615 44.168 92.901 44.1133C92.5232 43.7227 91.9112 43.7227 91.5334 44.1133L78.5143 57.5742L73.3837 52.2695L86.4104 38.8008C86.4708 38.7383 86.5162 38.6758 86.5615 38.6055C86.8335 38.1289 86.6824 37.5195 86.2215 37.2383C78.8014 32.707 69.0843 33.7461 62.6994 40.3398C57.6368 45.5742 55.9594 52.9961 57.6746 59.668L35.5353 82.5586C35.3086 82.793 35.3237 83.1758 35.5579 83.418L48.3806 96.6758C48.6149 96.918 48.9927 96.9336 49.2118 96.6992L71.3435 73.8164C77.804 75.5977 84.9823 73.8711 90.0524 68.6289C96.4297 62.0273 97.4347 51.9805 93.0522 44.3086ZM86.2064 64.6445C81.8163 69.1836 75.2274 70.0586 69.991 67.2695L69.3261 67.957L69.3185 67.9492L48.6149 89.3633L42.6304 83.1758L60.017 65.1992C60.017 65.1992 60.017 65.207 60.0245 65.207L64.0141 61.082C61.3166 55.668 62.1629 48.8555 66.553 44.3164C67.9689 42.8511 69.674 41.7192 71.5518 40.9978C73.4297 40.2765 75.436 39.9828 77.4337 40.1367L67.3917 50.5117C66.9381 50.9812 66.6834 51.6177 66.6834 52.2812C66.6834 52.9448 66.9381 53.5813 67.3917 54.0508L76.799 63.7773C77.2531 64.2463 77.8687 64.5097 78.5105 64.5097C79.1523 64.5097 79.7679 64.2463 80.2219 63.7773L90.2564 53.4023C90.536 57.4492 89.1683 61.5898 86.2064 64.6445Z' fill='#1890FF' />
               </svg>
+
             </Row>
             <Row>
               <Menu
@@ -199,7 +195,7 @@ const EmployeeHome = ({ logoutHandler }) => {
           color: 'white'
         }}
       >
-        Bilsend ©2022 Created by Tumharay Abu
+        BilCargo ©2022
       </Footer>
     </Layout>
   )

@@ -50,7 +50,7 @@ const MenuItems = [
   }
 ]
 
-const UserHome = ({ logoutHandler }) => {
+const UserHome = ({ user, logoutHandler }) => {
   const [currentDashboard, setCurrentDashboard] = useState(<UserHomeDashboard />)
   const [page, setPage] = useState('Dashboard')
 
@@ -59,26 +59,26 @@ const UserHome = ({ logoutHandler }) => {
   } = theme.useToken()
 
   const goBack = () => {
-    setCurrentDashboard(<UserHomeDashboard />)
+    setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} user={user} />)
   }
 
   const addPackage = () => {
-    setCurrentDashboard(<AddPackage goBack={goBack} />)
+    setCurrentDashboard(<AddPackage goBack={goBack} user={user} />)
   }
 
   useEffect(() => {
     switch (page) {
       case 'Dashboard':
-        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} />)
+        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} user={user} />)
         break
       case 'User Info':
-        setCurrentDashboard(<UserInfoDashboard />)
+        setCurrentDashboard(<UserInfoDashboard user={user} />)
         break
       case 'Recipients List':
-        setCurrentDashboard(<RecipientListDashboard />)
+        setCurrentDashboard(<RecipientListDashboard user={user} />)
         break
       case 'Add Package':
-        setCurrentDashboard(<AddPackage goBack={goBack} />)
+        setCurrentDashboard(<AddPackage goBack={goBack} user={user} />)
         break
       // case "Shipment History":
       //   setCurrentDashboard(<UserHomeDashboard/>)
@@ -96,25 +96,25 @@ const UserHome = ({ logoutHandler }) => {
   const pageChangeHandler = (menuItem) => {
     switch (menuItem.key) {
       case 'Dashboard':
-        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} />)
+        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} user={user} />)
         break
       case 'User Info':
-        setCurrentDashboard(<UserInfoDashboard />)
+        setCurrentDashboard(<UserInfoDashboard user={user} />)
         break
       case 'Recipients List':
-        setCurrentDashboard(<RecipientListDashboard />)
+        setCurrentDashboard(<RecipientListDashboard user={user} />)
         break
       case 'Active Shipments':
-        setCurrentDashboard(<ActiveShipmentsDashboard addPackage={addPackage} />)
+        setCurrentDashboard(<ActiveShipmentsDashboard addPackage={addPackage} user={user} />)
         break
       case 'Shipment History':
-        setCurrentDashboard(<ShipmentsHistoryDashboard addPackage={addPackage} />)
+        setCurrentDashboard(<ShipmentsHistoryDashboard addPackage={addPackage} user={user} />)
         break
       case 'Payment Details':
-        setCurrentDashboard(<PaymentDashboard />)
+        setCurrentDashboard(<PaymentDashboard user={user} />)
         break
       case 'Complaints':
-        setCurrentDashboard(<ComplaintsDashboard />)
+        setCurrentDashboard(<ComplaintsDashboard user={user} />)
     }
   }
 
@@ -199,7 +199,7 @@ const UserHome = ({ logoutHandler }) => {
           color: 'white'
         }}
       >
-        Bilsend ©2022 Created by Tumharay Abu
+        BilCargo ©2022
       </Footer>
     </Layout>
   )

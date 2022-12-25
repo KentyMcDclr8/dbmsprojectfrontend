@@ -1,17 +1,21 @@
 
-import { Row, Input, Form, Button } from 'antd'
+import { Row, Input, Form, Button, message } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const UserInfoDashboard = (user) => {
   const [form] = Form.useForm()
   const [viewMode, setViewMode] = useState(true)
-  const [buttonText, setButtonText] = useState('Edit')
+
+  useEffect(() => {
+    console.log('User = ', user)
+    form.setFieldsValue(user.user)
+  }, [user])
 
   const updateUserInfo = () => {
     // TODO
-    setButtonText('Edit')
+    message.success('User Information Updated Successfully')
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -21,7 +25,6 @@ const UserInfoDashboard = (user) => {
   const buttonClickHandler = () => {
     if (viewMode) {
       setViewMode(false)
-      setButtonText('Update')
     } else {
       setViewMode(true)
       updateUserInfo()
@@ -127,12 +130,17 @@ const UserInfoDashboard = (user) => {
         >
           <Input disabled={viewMode} maxLength={255} />
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 4, span: 12 }}>
-          <Button onClick={() => buttonClickHandler()} type='primary' htmlType='submit' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '50%' }}>
-            {buttonText}
+        {!viewMode && (<Form.Item wrapperCol={{ offset: 4, span: 12 }}>
+          <Button type='primary' htmlType='submit' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '50%' }}>
+            Update
           </Button>
-        </Form.Item>
+        </Form.Item>)}
       </Form>
+      {viewMode && (<Row wrapperCol={{ offset: 4, span: 12 }}>
+        <Button onClick={() => buttonClickHandler()} type='primary' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '25%' }}>
+          Edit
+        </Button>
+                    </Row>)}
       <Row />
     </>
 

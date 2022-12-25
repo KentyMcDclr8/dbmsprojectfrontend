@@ -4,7 +4,7 @@ import { InboxOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 // import { useCallback, useState } from 'react'
 
-const UserHomeDashboard = ({ addPackage }) => {
+const EmployeeHomeDashboard = ({ employee, addPackage }) => {
   const gotoPackage = () => {
     // TODO
     addPackage()
@@ -43,14 +43,15 @@ const UserHomeDashboard = ({ addPackage }) => {
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Welcome user.name</h1>
+        <h1 style={{ fontSize: 50 }}>Welcome {employee == null ? null : employee.name}</h1>
 
       </Row>
 
       <Row>
         <Col>
+
           <Card
-            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>Delivered</h2>}
+            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}> Packages Managed</h2>}
             style={{
               width: 300,
               fontSize: 50,
@@ -65,7 +66,7 @@ const UserHomeDashboard = ({ addPackage }) => {
         </Col>
         <Col>
           <Card
-            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>Cancelled</h2>}
+            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>Complaints Resolved</h2>}
             style={{
               width: 300,
               fontSize: 50,
@@ -80,9 +81,9 @@ const UserHomeDashboard = ({ addPackage }) => {
         </Col>
         <Col>
           <Card
-            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>To be Assigned</h2>}
+            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>Courier Applications Evaluated</h2>}
             style={{
-              width: 300,
+              width: 390,
               fontSize: 50,
               margin: 20
             }}
@@ -95,9 +96,9 @@ const UserHomeDashboard = ({ addPackage }) => {
         </Col>
         <Col>
           <Card
-            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>On Hold</h2>}
+            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>Delivery Branches Handled</h2>}
             style={{
-              width: 300,
+              width: 350,
               fontSize: 50,
               margin: 20
             }}
@@ -108,46 +109,11 @@ const UserHomeDashboard = ({ addPackage }) => {
             <h2 style={{ fontSize: 40, textAlign: 'center', fontWeight: 'normal' }}>{getTotalOnHold()}</h2>
           </Card>
         </Col>
-        <Col>
-          <Card
-            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>On the Way</h2>}
-            style={{
-              width: 300,
-              fontSize: 50,
-              margin: 20
-            }}
-            size='default'
-            bordered
-            type='inner'
-          >
-            <h2 style={{ fontSize: 40, textAlign: 'center', fontWeight: 'normal' }}>{getTotalOnTheWay()}</h2>
-          </Card>
-        </Col>
-        <Col>
-          <Card
-            title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>Awaiting Pickup</h2>}
-            style={{
-              width: 300,
-              fontSize: 50,
-              margin: 20
-            }}
-            size='default'
-            bordered
-            type='inner'
-          >
-            <h2 style={{ fontSize: 40, textAlign: 'center', fontWeight: 'normal' }}>{getTotalAwaitingPickup()}</h2>
-          </Card>
-        </Col>
       </Row>
-      <Row>
-
-        <Button onClick={() => gotoPackage()} block type='primary' icon={<InboxOutlined />} size='large' style={{ marginLeft: '30%', marginRight: '30%' }}>
-          Create New Package
-        </Button>
-      </Row>
+      <Row />
     </>
 
   )
 }
 
-export default UserHomeDashboard
+export default EmployeeHomeDashboard

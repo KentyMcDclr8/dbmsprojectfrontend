@@ -1,11 +1,11 @@
 import React from 'react'
 import { UserAddOutlined, IdcardOutlined } from '@ant-design/icons'
 import { message, Button, Layout, Input, Row, Form, theme } from 'antd'
-import {login} from '../../ApiHelper/backend_helper'
+import { login } from '../../ApiHelper/backend_helper'
 
 const { Header, Content, Footer, Sider } = Layout
 
-const LoginPage = ({ changePage }) => {
+const LoginPage = ({ changePage, setUserData }) => {
   const [form] = Form.useForm()
 
   const {
@@ -24,24 +24,31 @@ const LoginPage = ({ changePage }) => {
     console.log('Logind')
     // Api should return user type
 
-    console.log("Login VALUES = ", values)
+    console.log('Login VALUES = ', values)
 
-    // login(values.id, values.password)
-    //   .then(data => {
-    //     // setColumnData(colData)       
-    //     console.log("data", data) 
-    //     // changePage(data.type)
-    //     changePage('User')
-    //     message.success('Login Successful')
-    //   })
-    //   .catch(e => {
-    //     message.error(e.message)
-    //   })
-    //   .finally(() => {
-    //     form.resetFields()
-    //   })
-        changePage('User')
+    login(values.id, values.password)
+      .then(data => {
+        // setColumnData(colData)
+        console.log('data', data)
+        setUserData(data)
+        if (data.type == 'Customer') {
+          changePage('User')
+        } else if (data.type == 'Employee') {
+          changePage('Employee')
+        } else {
+          changePage('Admin')
+        }
         message.success('Login Successful')
+      })
+      .catch(e => {
+        message.error('Invalid User ID or Password')
+      })
+      .finally(() => {
+        form.resetFields()
+      })
+
+    // changePage('User')
+    // message.success('Login Successful')
   }
 
   return (
@@ -137,7 +144,7 @@ const LoginPage = ({ changePage }) => {
 
         }}
       >
-        Bilsend ©2022 Created by Tumharay Abu
+        BilCargo ©2022
       </Footer>
     </Layout>
   )

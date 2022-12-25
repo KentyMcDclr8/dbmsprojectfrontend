@@ -5,7 +5,7 @@ import { IdcardOutlined, DeleteOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useCallback, useState } from 'react'
 
-const PaymentDashboard = () => {
+const PaymentDashboard = (user) => {
   const [addModal, setAddModal] = useState(false)
   const [form] = Form.useForm()
 

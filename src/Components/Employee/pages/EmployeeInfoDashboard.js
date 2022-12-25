@@ -1,17 +1,21 @@
 
-import { Row, Input, Form, Button } from 'antd'
+import { Row, Input, Form, Button, message } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const EmployeeInfoDashboard = (user) => {
+const EmployeeInfoDashboard = (employee) => {
   const [form] = Form.useForm()
   const [viewMode, setViewMode] = useState(true)
-  const [buttonText, setButtonText] = useState('Edit')
 
-  const updateUserInfo = () => {
+  useEffect(() => {
+    console.log('employee = ', employee)
+    form.setFieldsValue(employee.employee)
+  }, [employee])
+
+  const updateEmployeeInfo = () => {
     // TODO
-    setButtonText('Edit')
+    message.success('Employee Information Updated Successfully')
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -21,22 +25,21 @@ const EmployeeInfoDashboard = (user) => {
   const buttonClickHandler = () => {
     if (viewMode) {
       setViewMode(false)
-      setButtonText('Update')
     } else {
       setViewMode(true)
-      updateUserInfo()
+      updateEmployeeInfo()
     }
   }
 
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>User Info</h1>
+        <h1 style={{ fontSize: 50 }}>Employee Info</h1>
 
       </Row>
 
       <Form
-        name='User Info'
+        name='Employee Info'
         form={form}
         layout='horizontal'
         labelCol={{ span: 4 }}
@@ -47,11 +50,11 @@ const EmployeeInfoDashboard = (user) => {
         colon
       >
         <Form.Item
-          label='User ID'
+          label='Employee ID'
           key='id'
           name='id'
-          initialValue={user.id}
-          rules={[{ required: true, message: 'Missing User ID' }]}
+          initialValue={employee.id}
+          rules={[{ required: true, message: 'Missing Employee ID' }]}
         >
           <Input disabled maxLength={255} />
         </Form.Item>
@@ -59,7 +62,7 @@ const EmployeeInfoDashboard = (user) => {
           label='Name'
           key='name'
           name='name'
-          initialValue={user.name}
+          initialValue={employee.name}
           rules={[{ required: true, message: 'Missing Name' }]}
         >
           <Input disabled={viewMode} maxLength={255} />
@@ -68,7 +71,7 @@ const EmployeeInfoDashboard = (user) => {
           label='Email'
           key='email'
           name='email'
-          initialValue={user.email}
+          initialValue={employee.email}
           rules={[{ required: true, message: 'Missing Email' }]}
         >
           <Input type='email' disabled={viewMode} maxLength={255} />
@@ -77,7 +80,7 @@ const EmployeeInfoDashboard = (user) => {
           label='Phone'
           key='phone'
           name='phone'
-          initialValue={user.phone}
+          initialValue={employee.phone}
           rules={[{ required: true, message: 'Missing Phone' }]}
         >
           <Input type='phone' disabled={viewMode} maxLength={255} />
@@ -86,53 +89,58 @@ const EmployeeInfoDashboard = (user) => {
           label='Password'
           key='password'
           name='password'
-          initialValue={user.password}
+          initialValue={employee.password}
           rules={[{ required: true, message: 'Missing Password' }]}
         >
           <Input type='password' disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
-          label='Building No'
-          key='buildingNo'
-          name='buildingNo'
-          initialValue={user.buildingNo}
-          rules={[{ required: true, message: 'Missing Building No' }]}
+          label='Position'
+          key='position'
+          name='position'
+          initialValue={employee.position}
+          rules={[{ required: true, message: 'Missing Position' }]}
         >
-          <Input disabled={viewMode} maxLength={255} />
+          <Input disabled maxLength={255} />
         </Form.Item>
         <Form.Item
-          label='Street No'
-          key='streetNo'
-          name='streetNo'
-          initialValue={user.buildingNo}
-          rules={[{ required: true, message: 'Missing Street No' }]}
+          label='Status'
+          key='status'
+          name='status'
+          initialValue={employee.status}
+          rules={[{ required: true, message: 'Missing Status' }]}
         >
-          <Input disabled={viewMode} maxLength={255} />
+          <Input disabled maxLength={255} />
         </Form.Item>
         <Form.Item
-          label='City'
-          key='city'
-          name='city'
-          initialValue={user.city}
-          rules={[{ required: true, message: 'Missing City' }]}
+          label='Salary'
+          key='salary'
+          name='salary'
+          initialValue={employee.salary}
+          rules={[{ required: true, message: 'Missing Salary' }]}
         >
-          <Input disabled={viewMode} maxLength={255} />
+          <Input disabled maxLength={255} />
         </Form.Item>
         <Form.Item
-          label='Province'
-          key='province'
-          name='province'
-          initialValue={user.province}
-          rules={[{ required: true, message: 'Missing Province' }]}
+          label='Start Date'
+          key='startDate'
+          name='startDate'
+          initialValue={employee.startDate}
+          rules={[{ required: true, message: 'Missing Start Date' }]}
         >
-          <Input disabled={viewMode} maxLength={255} />
+          <Input disabled maxLength={255} />
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 4, span: 12 }}>
-          <Button onClick={() => buttonClickHandler()} type='primary' htmlType='submit' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '50%' }}>
-            {buttonText}
+        {!viewMode && (<Form.Item wrapperCol={{ offset: 4, span: 12 }}>
+          <Button type='primary' htmlType='submit' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '50%' }}>
+            Update
           </Button>
-        </Form.Item>
+        </Form.Item>)}
       </Form>
+      {viewMode && (<Row wrapperCol={{ offset: 4, span: 12 }}>
+        <Button onClick={() => buttonClickHandler()} type='primary' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '25%' }}>
+          Edit
+        </Button>
+                    </Row>)}
       <Row />
     </>
 

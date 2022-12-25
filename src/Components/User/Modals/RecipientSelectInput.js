@@ -7,7 +7,6 @@ const RecipientSelectInput = ({ value, onChange }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState()
 
   // Pagination
   const defaultPageSize = 10
@@ -19,7 +18,6 @@ const RecipientSelectInput = ({ value, onChange }) => {
 
   useEffect(() => {
     if (isModalVisible) {
-      setError(null)
       // setIsLoading(true)
       // getRecipients()
       //   .then(data => {
@@ -34,7 +32,6 @@ const RecipientSelectInput = ({ value, onChange }) => {
       //     setData(colData)
       //   })
       //   .catch(e => {
-      //     setError(e)
       //     message.error('Error has occurred! ' + e.message)
       //   })
       //   .finally(() => {
@@ -124,11 +121,18 @@ const RecipientSelectInput = ({ value, onChange }) => {
     <>
       <div
         className='ant-input'
-        style={{ display: 'flex', justifyContent: 'space-between', border:true}}
+        style={{ display: 'flex', 
+        padding: '5px',
+        borderColor:'#dcdcdc',
+        borderStyle:'block',
+        borderWidth:'1px',
+        
+        justifyContent: 'space-between', border:'solid 1px #dcdcdc', borderRadius:'5px', background:'#fff' }}
         onClick={showModal}
-
+        // border: solid 1px gray;
+        // margin: 5px;
       >
-        <span>{'Select Recipient'}</span>
+        <span>{value ? value : <div style={{color:'#dcdcdc'}}>Select Recipient</div>}</span>
         <span>
           <CaretDownOutlined style={{ color: '#d9d9d9' }} />
         </span>

@@ -26,7 +26,7 @@ const CustomerSignUp = ({changePage}) => {
   const submitHandler = (id) => {
     console.log(`Login`)
     changePage('Login')
-    message.success("Your Application has been submitted successfully. Please your email for more information")
+    message.success("Your Application has been submitted successfully. Please check your email for more information")
   }
   
 

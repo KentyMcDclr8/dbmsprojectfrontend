@@ -27,7 +27,7 @@ const LoginPage = ({changePage}) => {
   const submitHandler = (id) => {
     console.log(`Logind`)
     changePage('Login')
-    message.success("Your Application has been submitted successfully. Please your email for more information")
+    message.success("Your Application has been submitted successfully. Please check your email for more information")
   }
   
 
@@ -124,7 +124,7 @@ const LoginPage = ({changePage}) => {
           name='description'
           rules={[{ required: true, message: 'Missing Description' }]}
         >
-          <TextArea rows={3} maxLength={4} />
+          <TextArea rows={3} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
           <Button style={{

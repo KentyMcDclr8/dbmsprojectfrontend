@@ -1,10 +1,16 @@
 
-import { Row, Col, Card, Button } from 'antd'
+import { Row, Col, Card, Button, Select } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 // import { useCallback, useState } from 'react'
 
-const UserHomeDashboard = (user) => {
+const UserHomeDashboard = ({addPackage}) => {
+
+  const gotoPackage = () => {
+    // TODO
+    addPackage()
+  }
+
   const getTotalDeliveries = () => {
     // TODO
     return 353
@@ -38,7 +44,7 @@ const UserHomeDashboard = (user) => {
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Welcome Kuri yawae</h1>
+        <h1 style={{ fontSize: 50 }}>Welcome user.name</h1>
 
       </Row>
 
@@ -136,7 +142,7 @@ const UserHomeDashboard = (user) => {
       </Row>
       <Row>
 
-        <Button block type='primary' icon={<InboxOutlined />} size='large' style={{ marginLeft: '30%', marginRight: '30%' }}>
+        <Button onClick={() => gotoPackage()} block type='primary' icon={<InboxOutlined />} size='large' style={{ marginLeft: '30%', marginRight: '30%' }}>
           Create New Package
         </Button>
       </Row>

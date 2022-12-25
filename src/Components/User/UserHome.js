@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
-import { blue } from '@ant-design/colors'
+import React, { useEffect, useState } from 'react'
 import { CreditCardOutlined, ExclamationCircleOutlined, WindowsOutlined, ProfileOutlined, InboxOutlined, HistoryOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, message, Layout, Menu, Row, theme } from 'antd'
 import UserHomeDashboard from './pages/UserHomeDashboard'
 import UserInfoDashboard from './pages/UserInfoDashboard'
 import RecipientListDashboard from './pages/RecipientListDashboard'
-
+import ActiveShipmentsDashboard from './pages/ActiveShipmentsDashboard'
+import ShipmentsHistoryDashboard from './pages/ShipmentsHistoryDashboard'
+import AddPackage from './pages/AddPackage'
+import PaymentDashboard from './pages/PaymentDashboard'
+import ComplaintsDashboard from './pages/ComplaintsDashboard'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -23,7 +26,7 @@ const MenuItems = [
   {
     key: 'Recipients List',
     icon: React.createElement(UsergroupAddOutlined),
-    label: 'Recipients List               '
+    label: 'Recipients List'
   },
   {
     key: 'Active Shipments',
@@ -49,15 +52,26 @@ const MenuItems = [
 
 const UserHome = ({logoutHandler}) => {
   const [currentDashboard, setCurrentDashboard] = useState(<UserHomeDashboard />)
+  const [page, setPage] = useState("Dashboard")
 
   const {
     token: { colorBgContainer }
   } = theme.useToken()
 
-  const pageChangeHandler = (menuItem) => {
-    switch (menuItem.key) {
+  const goBack = () => {
+    setCurrentDashboard(<UserHomeDashboard/>)
+  }
+
+  const addPackage = () => {
+    setCurrentDashboard(<AddPackage goBack={goBack}/>)
+  }
+
+
+  useEffect(() => {
+
+    switch (page) {
       case 'Dashboard':
-        setCurrentDashboard(<UserHomeDashboard />)
+        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage}/>)
         break
       case 'User Info':
         setCurrentDashboard(<UserInfoDashboard />)
@@ -65,17 +79,45 @@ const UserHome = ({logoutHandler}) => {
       case "Recipients List":
         setCurrentDashboard(<RecipientListDashboard/>)
         break;
-      // case "Active Shipments":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
-      //   break;
+      case 'Add Package':
+        setCurrentDashboard(<AddPackage goBack={goBack}/>)
+        break;
       // case "Shipment History":
       //   setCurrentDashboard(<UserHomeDashboard/>)
       //   break;
       // case "Payment Details":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
+      //   setCurrentDashboard(<PaymentDashboard/>)
       //   break;
       // case "Complaints":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
+      //   setCurrentDashboard(<ComplaintsDashboard/>)
+    }
+
+    console.log("page changes")
+
+  }, [page])
+
+  const pageChangeHandler = (menuItem) => {
+    switch (menuItem.key) {
+      case 'Dashboard':
+        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage}/>)
+        break
+      case 'User Info':
+        setCurrentDashboard(<UserInfoDashboard />)
+        break
+      case "Recipients List":
+        setCurrentDashboard(<RecipientListDashboard/>)
+        break;
+      case "Active Shipments":
+        setCurrentDashboard(<ActiveShipmentsDashboard addPackage={addPackage}/>)
+        break;
+      case "Shipment History":
+        setCurrentDashboard(<ShipmentsHistoryDashboard addPackage={addPackage}/>)
+        break;
+      case "Payment Details":
+        setCurrentDashboard(<PaymentDashboard/>)
+        break;
+      case "Complaints":
+        setCurrentDashboard(<ComplaintsDashboard/>)
     }
   }
 

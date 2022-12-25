@@ -1,6 +1,6 @@
 
-import { Row, Col, Modal, Button, Select, Tag, message, Popconfirm, Tooltip, Skeleton, Space, Table, Input, Radio } from 'antd'
-import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
+import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton, Space, Table, Tag, Radio } from 'antd'
+import { CheckCircleOutlined, CloseCircleOutlined , ExclamationCircleOutlined  ,  ExportOutlined   ,  FilterOutlined, PlusOutlined, FileExclamationOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import DataTable from '../../DataTable'
@@ -8,7 +8,7 @@ import {getSearchProps} from '../../SearchHelper'
 
 const { Option } = Select
 
-const RecipientListDashboard = (user) => {
+const ShipmentsHistoryDashboard = ({user, addPackage}) => {
 
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
@@ -34,78 +34,97 @@ const RecipientListDashboard = (user) => {
     render: (_, record) => (
       <Space size='middle'>
 
-          <Tooltip
-            title='Edit Recipient'
+          <Tooltip 
+            title='Submit Complaint'
           >
-            <EditOutlined style={{color:'#2196fc'}} onClick={() => onEditRowHandler(record)} />
+            <FileExclamationOutlined style={{color:'#dd525f'}} onClick={() => onComplaintHandler(record.id)} />
           </Tooltip>
    
-          <Popconfirm
-            title='Are you sure you want to delete this Recipient'
-            onConfirm={() => onRemoveRecordHandler(record.id)}
-          >
-            <DeleteOutlined style={{color:'#ce1a2a'}}/>
-          </Popconfirm>
+
 
       </Space>
     )
   }
 
+  const tagSelector = (text) => {
+    console.log("text", text)
+    if (String(text).includes('Delivered')) {
+      return (
+        <Tag icon={<CheckCircleOutlined/>} color='green'>
+          Delivered
+        </Tag>
+      )
+    } else {
+      return (
+        <Tag icon={<CloseCircleOutlined/>} color='volcano'>
+          Cancelled
+        </Tag>
+      )
+    }  
+  }
 
   const columns =  [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        id: 'id',
-        name: 'id',
-        type: 'number'
-      },
-      {
-        title: 'Name',
-        id: 'name',
-        dataIndex: 'name',
-        key: 'name',
-        name: 'name',
-        type: 'varchar'
-      },
-      {
-        title: 'Address',
-        id: 'address',
-        dataIndex: 'address',
-        key: 'address',
-        name: 'address',
-        type: 'varchar'
-      },
-      {
-        title: 'Phone',
-        id: 'phone',
-        dataIndex: 'phone',
-        key: 'phone',
-        name: 'phone',
-        type: 'number'
-      },
-      {
-        title: 'Email',
-        id: 'email',
-        dataIndex: 'email',
-        key: 'email',
-        name: 'email',
-        type: 'varchar'
-      }
-    ]
-
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      id: 'id',
+      name: 'id',
+      type: 'number'
+    },
+    {
+      title: 'Recipient Name',
+      id: 'name',
+      dataIndex: 'name',
+      key: 'name',
+      name: 'name',
+      type: 'varchar'
+    },
+    {
+      title: 'Weight',
+      id: 'weight',
+      dataIndex: 'weight',
+      key: 'weight',
+      name: 'weight',
+      type: 'varchar'
+    },
+    {
+      title: 'Dimensions',
+      id: 'dimensions',
+      dataIndex: 'dimensions',
+      key: 'dimensions',
+      name: 'dimensions',
+      type: 'varchar'
+    },
+    {
+      title: 'Type',
+      id: 'type',
+      dataIndex: 'type',
+      key: 'type',
+      name: 'type',
+      type: 'type'
+    },
+    {
+      title: 'Status',
+      id: 'status',
+      dataIndex: 'status',
+      key: 'status',
+      name: 'status',
+      type: 'status',
+      render: (text) => tagSelector(text) 
+    }
+  ]
+    
   const reset = () => {
     
     setData([
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-      {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Delivered'},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Cancelled'},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Delivered'},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Delivered'},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Delivered'},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Cancelled'},
+      {name: "ather", id :1, weight:"300", dimensions:"50x34x23", type: "Fragile", status: 'Delivered'},
     ])
 
     let cols = []
@@ -173,12 +192,12 @@ const RecipientListDashboard = (user) => {
               ...columns.filter(col => filteringValue.includes(`${col.key}`))
               // actionColumn
             ]
-      setFilteredColumns([...cols, actionColumn])
+            setFilteredColumns([...cols, actionColumn])
       getRecipients()
     }
 
     
-  const onRemoveRecordHandler = (id) => {
+  const onComplaintHandler = (id) => {
     console.log(`Record with id:${id} is deleted`)
     // setIsLoading(true)
     // deleteRecipient( id)
@@ -196,15 +215,15 @@ const RecipientListDashboard = (user) => {
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Recipient List</h1>
+        <h1 style={{ fontSize: 50 }}>Shipments History</h1>
       </Row>
       <Row >
         <Col offset={19} >
           <Button onClick={() => showFilter()}  type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
           </Button>
-          <Button onClick={() => onAddToTable()}  type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Recipient
+          <Button onClick={() => addPackage()}  type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
+            Create New Package
           </Button>
         </Col>
 
@@ -273,4 +292,4 @@ const RecipientListDashboard = (user) => {
   )
 }
 
-export default RecipientListDashboard
+export default ShipmentsHistoryDashboard

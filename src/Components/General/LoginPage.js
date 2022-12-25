@@ -25,6 +25,7 @@ const LoginPage = ({changePage}) => {
 
   const loginHandler = (id) => {
     console.log(`Logind`)
+    //Api should return user type
     changePage('User')
     message.success("Login Successful")
  

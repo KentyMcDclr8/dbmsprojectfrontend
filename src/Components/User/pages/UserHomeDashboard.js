@@ -4,8 +4,7 @@ import { InboxOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 // import { useCallback, useState } from 'react'
 
-const UserHomeDashboard = ({addPackage}) => {
-
+const UserHomeDashboard = ({ addPackage }) => {
   const gotoPackage = () => {
     // TODO
     addPackage()
@@ -55,7 +54,7 @@ const UserHomeDashboard = ({addPackage}) => {
             style={{
               width: 300,
               fontSize: 50,
-              margin: 30
+              margin: 20
             }}
             size='default'
             bordered
@@ -70,7 +69,7 @@ const UserHomeDashboard = ({addPackage}) => {
             style={{
               width: 300,
               fontSize: 50,
-              margin: 30
+              margin: 20
             }}
             size='default'
             bordered
@@ -85,7 +84,7 @@ const UserHomeDashboard = ({addPackage}) => {
             style={{
               width: 300,
               fontSize: 50,
-              margin: 30
+              margin: 20
             }}
             size='default'
             bordered
@@ -100,7 +99,7 @@ const UserHomeDashboard = ({addPackage}) => {
             style={{
               width: 300,
               fontSize: 50,
-              margin: 30
+              margin: 20
             }}
             size='default'
             bordered
@@ -115,7 +114,7 @@ const UserHomeDashboard = ({addPackage}) => {
             style={{
               width: 300,
               fontSize: 50,
-              margin: 30
+              margin: 20
             }}
             size='default'
             bordered
@@ -130,7 +129,7 @@ const UserHomeDashboard = ({addPackage}) => {
             style={{
               width: 300,
               fontSize: 50,
-              margin: 30
+              margin: 20
             }}
             size='default'
             bordered

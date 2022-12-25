@@ -14,8 +14,6 @@ const RecipientSelectInput = ({ value, onChange }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentPageSize, setCurrentPageSize] = useState(defaultPageSize)
 
-
-
   useEffect(() => {
     if (isModalVisible) {
       // setIsLoading(true)
@@ -38,14 +36,14 @@ const RecipientSelectInput = ({ value, onChange }) => {
       //     setIsLoading(false)
       //   })
       setData([
-        {name: "ather", id :1, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :12, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :13, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :142, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :124, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :112, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :1111, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
-        {name: "ather", id :1231, email:"atherilyas@gmail.com", phone:"+90 552 717 46 33", address: "Bilkent, Ankara"},
+        { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 12, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 13, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 142, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 124, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 112, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 1111, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+        { name: 'ather', id: 1231, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
       ])
     }
   }, [isModalVisible])
@@ -74,65 +72,70 @@ const RecipientSelectInput = ({ value, onChange }) => {
   }
 
   // const data
-  const columns =  [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        id: 'id',
-        name: 'id',
-        type: 'number'
-      },
-      {
-        title: 'Name',
-        id: 'name',
-        dataIndex: 'name',
-        key: 'name',
-        name: 'name',
-        type: 'varchar'
-      },
-      {
-        title: 'Address',
-        id: 'address',
-        dataIndex: 'address',
-        key: 'address',
-        name: 'address',
-        type: 'varchar'
-      },
-      {
-        title: 'Phone',
-        id: 'phone',
-        dataIndex: 'phone',
-        key: 'phone',
-        name: 'phone',
-        type: 'number'
-      },
-      {
-        title: 'Email',
-        id: 'email',
-        dataIndex: 'email',
-        key: 'email',
-        name: 'email',
-        type: 'varchar'
-      }
-    ]
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      id: 'id',
+      name: 'id',
+      type: 'number'
+    },
+    {
+      title: 'Name',
+      id: 'name',
+      dataIndex: 'name',
+      key: 'name',
+      name: 'name',
+      type: 'varchar'
+    },
+    {
+      title: 'Address',
+      id: 'address',
+      dataIndex: 'address',
+      key: 'address',
+      name: 'address',
+      type: 'varchar'
+    },
+    {
+      title: 'Phone',
+      id: 'phone',
+      dataIndex: 'phone',
+      key: 'phone',
+      name: 'phone',
+      type: 'number'
+    },
+    {
+      title: 'Email',
+      id: 'email',
+      dataIndex: 'email',
+      key: 'email',
+      name: 'email',
+      type: 'varchar'
+    }
+  ]
 
   return (
     <>
       <div
         className='ant-input'
-        style={{ display: 'flex', 
-        padding: '5px',
-        borderColor:'#dcdcdc',
-        borderStyle:'block',
-        borderWidth:'1px',
-        
-        justifyContent: 'space-between', border:'solid 1px #dcdcdc', borderRadius:'5px', background:'#fff' }}
+        style={{
+          display: 'flex',
+          padding: '5px',
+          borderColor: '#dcdcdc',
+          borderStyle: 'block',
+          borderWidth: '1px',
+
+          justifyContent: 'space-between',
+          border: 'solid 1px #dcdcdc',
+          borderRadius: '5px',
+          background: '#fff'
+        }}
         onClick={showModal}
         // border: solid 1px gray;
         // margin: 5px;
       >
-        <span>{value ? value : <div style={{color:'#dcdcdc'}}>Select Recipient</div>}</span>
+        <span>{value || <div style={{ color: '#dcdcdc' }}>Select Recipient</div>}</span>
         <span>
           <CaretDownOutlined style={{ color: '#d9d9d9' }} />
         </span>

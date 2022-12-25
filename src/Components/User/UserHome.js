@@ -50,38 +50,36 @@ const MenuItems = [
   }
 ]
 
-const UserHome = ({logoutHandler}) => {
+const UserHome = ({ logoutHandler }) => {
   const [currentDashboard, setCurrentDashboard] = useState(<UserHomeDashboard />)
-  const [page, setPage] = useState("Dashboard")
+  const [page, setPage] = useState('Dashboard')
 
   const {
     token: { colorBgContainer }
   } = theme.useToken()
 
   const goBack = () => {
-    setCurrentDashboard(<UserHomeDashboard/>)
+    setCurrentDashboard(<UserHomeDashboard />)
   }
 
   const addPackage = () => {
-    setCurrentDashboard(<AddPackage goBack={goBack}/>)
+    setCurrentDashboard(<AddPackage goBack={goBack} />)
   }
 
-
   useEffect(() => {
-
     switch (page) {
       case 'Dashboard':
-        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage}/>)
+        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} />)
         break
       case 'User Info':
         setCurrentDashboard(<UserInfoDashboard />)
         break
-      case "Recipients List":
-        setCurrentDashboard(<RecipientListDashboard/>)
-        break;
+      case 'Recipients List':
+        setCurrentDashboard(<RecipientListDashboard />)
+        break
       case 'Add Package':
-        setCurrentDashboard(<AddPackage goBack={goBack}/>)
-        break;
+        setCurrentDashboard(<AddPackage goBack={goBack} />)
+        break
       // case "Shipment History":
       //   setCurrentDashboard(<UserHomeDashboard/>)
       //   break;
@@ -92,40 +90,39 @@ const UserHome = ({logoutHandler}) => {
       //   setCurrentDashboard(<ComplaintsDashboard/>)
     }
 
-    console.log("page changes")
-
+    console.log('page changes')
   }, [page])
 
   const pageChangeHandler = (menuItem) => {
     switch (menuItem.key) {
       case 'Dashboard':
-        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage}/>)
+        setCurrentDashboard(<UserHomeDashboard addPackage={addPackage} />)
         break
       case 'User Info':
         setCurrentDashboard(<UserInfoDashboard />)
         break
-      case "Recipients List":
-        setCurrentDashboard(<RecipientListDashboard/>)
-        break;
-      case "Active Shipments":
-        setCurrentDashboard(<ActiveShipmentsDashboard addPackage={addPackage}/>)
-        break;
-      case "Shipment History":
-        setCurrentDashboard(<ShipmentsHistoryDashboard addPackage={addPackage}/>)
-        break;
-      case "Payment Details":
-        setCurrentDashboard(<PaymentDashboard/>)
-        break;
-      case "Complaints":
-        setCurrentDashboard(<ComplaintsDashboard/>)
+      case 'Recipients List':
+        setCurrentDashboard(<RecipientListDashboard />)
+        break
+      case 'Active Shipments':
+        setCurrentDashboard(<ActiveShipmentsDashboard addPackage={addPackage} />)
+        break
+      case 'Shipment History':
+        setCurrentDashboard(<ShipmentsHistoryDashboard addPackage={addPackage} />)
+        break
+      case 'Payment Details':
+        setCurrentDashboard(<PaymentDashboard />)
+        break
+      case 'Complaints':
+        setCurrentDashboard(<ComplaintsDashboard />)
     }
   }
 
   const logout = () => {
     logoutHandler('Login')
-    message.warning("User has been logged out")
+    message.warning('User has been logged out')
   }
-  
+
   return (
     <Layout style={{ backgroundColor: '#3c9ce4' }}>
 
@@ -141,9 +138,9 @@ const UserHome = ({logoutHandler}) => {
 
         <Layout
           style={{
-            padding: '24px 0',
+            padding: '12px 0',
             background: colorBgContainer
-            
+
           }}
         >
           <Sider
@@ -170,8 +167,8 @@ const UserHome = ({logoutHandler}) => {
                 defaultSelectedKeys={['1']}
                 defaultOpenKeys={['Dashboard']}
                 style={{
-                  height: '100%',
-                  
+                  height: '105%'
+
                 }}
                 items={MenuItems}
                 onClick={pageChangeHandler}
@@ -179,7 +176,7 @@ const UserHome = ({logoutHandler}) => {
             </Row>
 
             <Row align='bottom'>
-              <Button onClick={() => logout()}  block type='primary' style={{ marginLeft: '10px', marginRight: '10px', marginTop: '400px' }} danger>
+              <Button onClick={() => logout()} block type='primary' style={{ marginLeft: '10px', marginRight: '10px', marginTop: '310px' }} danger>
                 Logout
               </Button>
             </Row>
@@ -187,8 +184,8 @@ const UserHome = ({logoutHandler}) => {
           </Sider>
           <Content
             style={{
-              padding: '0 24px',
-              minHeight: 965,
+              padding: '5 24px',
+              minHeight: 863
             }}
           >
             {currentDashboard}

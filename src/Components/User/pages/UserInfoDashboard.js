@@ -1,15 +1,13 @@
 
-import { Row, Input, Form, Button,  } from 'antd'
+import { Row, Input, Form, Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useState } from 'react'
 
 const UserInfoDashboard = (user) => {
-
   const [form] = Form.useForm()
   const [viewMode, setViewMode] = useState(true)
   const [buttonText, setButtonText] = useState('Edit')
-
 
   const updateUserInfo = () => {
     // TODO
@@ -21,16 +19,14 @@ const UserInfoDashboard = (user) => {
   }
 
   const buttonClickHandler = () => {
-    if (viewMode){
+    if (viewMode) {
       setViewMode(false)
       setButtonText('Update')
-    }
-    else{
+    } else {
       setViewMode(true)
       updateUserInfo()
     }
   }
-  
 
   return (
     <>
@@ -44,8 +40,8 @@ const UserInfoDashboard = (user) => {
         form={form}
         layout='horizontal'
         labelCol={{ span: 4 }}
-        wrapperCol={{ span: 16 }}
-        onFinish={updateUserInfo}
+        wrapperCol={{ span: 14 }}
+        onFinish={buttonClickHandler}
         onFinishFailed={onFinishFailed}
         autoComplete='off'
         colon
@@ -75,7 +71,7 @@ const UserInfoDashboard = (user) => {
           initialValue={user.email}
           rules={[{ required: true, message: 'Missing Email' }]}
         >
-          <Input type='email'  disabled={viewMode} maxLength={255} />
+          <Input type='email' disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Phone'
@@ -84,7 +80,7 @@ const UserInfoDashboard = (user) => {
           initialValue={user.phone}
           rules={[{ required: true, message: 'Missing Phone' }]}
         >
-          <Input type='phone' disabled={viewMode}  maxLength={255} />
+          <Input type='phone' disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Password'
@@ -93,7 +89,7 @@ const UserInfoDashboard = (user) => {
           initialValue={user.password}
           rules={[{ required: true, message: 'Missing Password' }]}
         >
-          <Input type='password' disabled={viewMode}  maxLength={255} />
+          <Input type='password' disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Building No'
@@ -102,7 +98,7 @@ const UserInfoDashboard = (user) => {
           initialValue={user.buildingNo}
           rules={[{ required: true, message: 'Missing Building No' }]}
         >
-          <Input  disabled={viewMode}  maxLength={255} />
+          <Input disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Street No'
@@ -111,7 +107,7 @@ const UserInfoDashboard = (user) => {
           initialValue={user.buildingNo}
           rules={[{ required: true, message: 'Missing Street No' }]}
         >
-          <Input  disabled={viewMode}  maxLength={255} />
+          <Input disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
           label='City'
@@ -120,7 +116,7 @@ const UserInfoDashboard = (user) => {
           initialValue={user.city}
           rules={[{ required: true, message: 'Missing City' }]}
         >
-          <Input  disabled={viewMode}  maxLength={255} />
+          <Input disabled={viewMode} maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Province'
@@ -129,15 +125,15 @@ const UserInfoDashboard = (user) => {
           initialValue={user.province}
           rules={[{ required: true, message: 'Missing Province' }]}
         >
-          <Input  disabled={viewMode}  maxLength={255} />
+          <Input disabled={viewMode} maxLength={255} />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 4, span: 12 }}>
+          <Button onClick={() => buttonClickHandler()} type='primary' htmlType='submit' icon={<EditOutlined />} size='large' style={{ marginTop: '30px', marginLeft: '30%', marginRight: '30%', width: '50%' }}>
+            {buttonText}
+          </Button>
         </Form.Item>
       </Form>
-      <Row>
-
-        <Button onClick={() => buttonClickHandler()} block type='primary' icon={<EditOutlined />} size='large' style={{ marginLeft: '30%', marginRight: '30%' }}>
-          {buttonText}
-        </Button>
-      </Row>
+      <Row />
     </>
 
   )

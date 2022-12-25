@@ -18,7 +18,7 @@ import {
 } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-const {Text} = Typography
+const { Text } = Typography
 
 const DataTable = ({
   isLoading,
@@ -85,12 +85,11 @@ const DataTable = ({
     cols = columns?.map((column) => {
       return {
         ...column,
-        ...getSearchProps(column.name, column.type),
+        ...getSearchProps(column.name, column.type)
       }
     })
     setFilteredColumns([...cols, actionColumn])
   }, [columns, actionColumn, getSearchProps])
-
 
   useEffect(() => {
     setTotalCount(data.length)

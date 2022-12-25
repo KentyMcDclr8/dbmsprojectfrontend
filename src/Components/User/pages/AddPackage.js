@@ -1,36 +1,30 @@
 
-import { Row, Input, Form, Button, Select, Radio , message, Modal} from 'antd'
+import { Row, Input, Form, Button, Select, Radio, message, Modal } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useState } from 'react'
 import RecipientSelectInput from '../Modals/RecipientSelectInput'
 
-
-
-const AddPackage = ({user, goBack}) => {
-
+const AddPackage = ({ user, goBack }) => {
   const [form] = Form.useForm()
 
   const packageTypes = [
-    "Document",
-    "Fragile",
-    "Heavy",
-    "Luxury",
-    "Other"
+    'Document',
+    'Fragile',
+    'Heavy',
+    'Luxury',
+    'Other'
   ]
 
   const paymentMethods = [
-    "Business",
-    "Yapi Kredi",
-    "Is Bank"
+    'Business',
+    'Yapi Kredi',
+    'Is Bank'
   ]
-
-  
-
 
   const confirmSubmit = () => {
     // TODO
-    message.success("Package Created Successfully")
+    message.success('Package Created Successfully')
     goBack()
   }
 
@@ -39,21 +33,19 @@ const AddPackage = ({user, goBack}) => {
   }
 
   const buttonClickHandler = () => {
-    //get package price
+    // get package price
     Modal.confirm({
-      title: "Total Cost = 300TL",
+      title: 'Total Cost = 300TL',
       content: 'Are you sure you want to proceed with the package delivery?',
       bodyStyle: { fontWeight: '600', paddingTop: '10px' },
       okText: 'Confirm',
-      onOk:() => confirmSubmit() 
+      onOk: () => confirmSubmit()
     })
-
   }
-  
 
   return (
     <>
-      <Row className='table-form-comp' style={{marginBottom: '30px'}}>
+      <Row className='table-form-comp' style={{ marginBottom: '30px' }}>
         <h1 style={{ fontSize: 50 }}>Create New Package</h1>
 
       </Row>
@@ -75,7 +67,7 @@ const AddPackage = ({user, goBack}) => {
           name='packageType'
           rules={[{ required: true, message: 'Missing Package Type' }]}
         >
-          <Select placeholder="Choose Package Type">
+          <Select placeholder='Choose Package Type'>
             {packageTypes.map(type => (
               <Select.Option key={type} value={type}>
                 {type}
@@ -97,7 +89,7 @@ const AddPackage = ({user, goBack}) => {
           name='dimensions'
           rules={[{ required: true, message: 'Missing Dimensions' }]}
         >
-          <Input placeholder="Enter Dimension HH - WW - BB in centimeters" maxLength={255} />
+          <Input placeholder='Enter Dimension HH - WW - BB in centimeters' maxLength={255} />
         </Form.Item>
         <Form.Item
           label='Recipient'
@@ -105,7 +97,7 @@ const AddPackage = ({user, goBack}) => {
           name='recipient'
           rules={[{ required: true, message: 'Missing Recipient' }]}
         >
-         <RecipientSelectInput/>
+          <RecipientSelectInput />
         </Form.Item>
 
         <Form.Item
@@ -114,24 +106,21 @@ const AddPackage = ({user, goBack}) => {
           name='paymentMethod'
           rules={[{ required: true, message: 'Missing Payment Method' }]}
         >
-        <Radio.Group >
+          <Radio.Group>
             {paymentMethods.map(method => (
-              <Radio.Button key={method} value={method} style={{marginRight: "20px"}}>
+              <Radio.Button key={method} value={method} style={{ marginRight: '20px' }}>
                 {method}
               </Radio.Button>
             ))}
-        </Radio.Group>
-      </Form.Item>
+          </Radio.Group>
+        </Form.Item>
         <Form.Item wrapperCol={{ offset: 1, span: 12 }}>
-        <Button  block type='primary' htmlType='submit' size='large' style={{ marginTop: '100px', marginLeft: '30%', marginRight: '30%' }}>
-          Submit
-        </Button>
+          <Button block type='primary' htmlType='submit' size='large' style={{ marginTop: '100px', marginLeft: '30%', marginRight: '30%' }}>
+            Submit
+          </Button>
         </Form.Item>
       </Form>
-      <Row>
-
-
-      </Row>
+      <Row />
     </>
 
   )

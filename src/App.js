@@ -5,6 +5,7 @@ import UserHome from './Components/User/UserHome'
 import LoginPage from './Components/General/LoginPage'
 import CourierSignUp from './Components/General/CourierSignUp'
 import CustomerSignUp from './Components/General/CustomerSignUp'
+import EmployeeHome from './Components/Employee/EmployeeHome'
 
 const App = () => {
   const [activePage, setActivePage] = useState(<LoginPage />)
@@ -15,21 +16,21 @@ const App = () => {
       case 'Login':
         setActivePage(<LoginPage changePage={setPage} />)
         break
-      case 'User':
-        setActivePage(<UserHome logoutHandler={setPage} />)
-        break
       case 'Customer Sign-up':
         setActivePage(<CustomerSignUp changePage={setPage} />)
         break
       case 'Courier Sign-up':
         setActivePage(<CourierSignUp changePage={setPage} />)
         break
-      // case "Shipment History":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
-      //   break;
-      // case "Payment Details":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
-      //   break;
+      case 'User':
+        setActivePage(<UserHome logoutHandler={setPage} />)
+        break
+      case 'Employee':
+        setActivePage(<EmployeeHome logoutHandler={setPage} />)
+        break
+      case 'Admin':
+        setActivePage(<UserHome logoutHandler={setPage} />)
+        break
       // case "Complaints":
       //   setCurrentDashboard(<UserHomeDashboard/>)
     }

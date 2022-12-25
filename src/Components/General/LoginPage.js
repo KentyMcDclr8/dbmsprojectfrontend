@@ -1,6 +1,7 @@
 import React from 'react'
 import { UserAddOutlined, IdcardOutlined } from '@ant-design/icons'
 import { message, Button, Layout, Input, Row, Form, theme } from 'antd'
+import {login} from '../../ApiHelper/backend_helper'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -19,11 +20,28 @@ const LoginPage = ({ changePage }) => {
     changePage('Courier Sign-up')
   }
 
-  const loginHandler = (id) => {
+  const loginHandler = (values) => {
     console.log('Logind')
     // Api should return user type
-    changePage('User')
-    message.success('Login Successful')
+
+    console.log("Login VALUES = ", values)
+
+    // login(values.id, values.password)
+    //   .then(data => {
+    //     // setColumnData(colData)       
+    //     console.log("data", data) 
+    //     // changePage(data.type)
+    //     changePage('User')
+    //     message.success('Login Successful')
+    //   })
+    //   .catch(e => {
+    //     message.error(e.message)
+    //   })
+    //   .finally(() => {
+    //     form.resetFields()
+    //   })
+        changePage('User')
+        message.success('Login Successful')
   }
 
   return (

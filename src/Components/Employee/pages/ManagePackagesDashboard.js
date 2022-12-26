@@ -3,8 +3,8 @@ import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton
 import { SyncOutlined, InboxOutlined, CarOutlined, ExportOutlined, FilterOutlined, EditOutlined, ExclamationCircleOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
-import DataTable from '../../DataTable'
 import { getSearchProps } from '../../SearchHelper'
+import CourierSelectInput from '../Modals/CourierSelectInput'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -27,6 +27,8 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
   const [isLoading, setIsLoading] = useState()
 
   const [editModal, setEditModal] = useState(false)
+  const [courierModal, setCourierModal] = useState(false)
+
   const [activePackage, setActivePackage] = useState(null)
 
   const actionColumn = {
@@ -163,9 +165,9 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
   const onAssignCourier = (record) => {
     // TODO
     console.log('record')
+    setCourierModal(true)
     setActivePackage(record)
     form.resetFields()
-    message.success('Package Hold Request Sent Successfully')
   }
 
   const handleSorting = () => {
@@ -183,8 +185,10 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
     return 353
   }
 
-  const onAddToTable = () => {
+  const assignCourierCancelled = () => {
     // TODO
+    setCourierModal(false)
+    form.resetFields()
   }
 
   // column filter/visibility functioanlity
@@ -235,6 +239,13 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
     setEditModal(false)
     form.resetFields()
     message.success('Status Updated Successfully')
+  }
+
+  const courierApiCall = () => {
+    // TODO
+    setCourierModal(false)
+    form.resetFields()
+    message.success('Courier Assigned Successfully')
   }
 
   const editCancelled = () => {
@@ -311,9 +322,9 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
           </Select>
         </Modal>
         <Modal
-          title='Edit Status'
-          visible={editModal}
-          onCancel={editCancelled}
+          title='Assign Courier'
+          visible={courierModal}
+          onCancel={assignCourierCancelled}
           footer={null}
           width={800}
         >
@@ -324,7 +335,7 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
             layout='horizontal'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            onFinish={editApiCall}
+            onFinish={courierApiCall}
             autoComplete='off'
             colon
           >
@@ -338,26 +349,13 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
               <Input disabled />
             </Form.Item>
             <Form.Item
-              label='Status'
-              key='status'
-              name='status'
-              initialValue={activePackage === null ? null : activePackage.status}
+              label='Assigned Courier'
+              key='courierId'
+              name='courierId'
+              initialValue={activePackage === null ? null : activePackage.courierId}
               rules={[{ required: true, message: 'Missing Status' }]}
             >
-              <Select placeholder='Choose Package Status'>
-                {[
-                  'To be assigned',
-                  'Awaiting Pick-up',
-                  'On the way',
-                  'Cancelled',
-                  'On Hold',
-                  'Delivered'
-                ].map(type => (
-                  <Select.Option key={type} value={type}>
-                    {type}
-                  </Select.Option>
-                ))}
-              </Select>
+              <CourierSelectInput />
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 6, span: 12 }}>

@@ -3,7 +3,6 @@ import { Row, Col, Modal, Button, Select, Form, message, Popconfirm, Tooltip, Sk
 import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
-import DataTable from '../../DataTable'
 import { getSearchProps } from '../../SearchHelper'
 
 const { Option } = Select

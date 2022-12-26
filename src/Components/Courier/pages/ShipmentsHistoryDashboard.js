@@ -27,25 +27,6 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
 
-  const actionColumn = {
-
-    title: 'Action',
-    dataIndex: '_action',
-    fixed: 'right',
-    width: 100,
-    render: (_, record) => (
-      <Space size='middle'>
-
-        <Tooltip
-          title='Submit Complaint'
-        >
-          <FileExclamationOutlined style={{ color: '#dd525f' }} onClick={() => onComplaintHandler(record.id)} />
-        </Tooltip>
-
-      </Space>
-    )
-  }
-
   const onComplaintHandler = (id) => {
     console.log(`Record with id:${id} is deleted`)
     setActivePackageId(id)
@@ -159,7 +140,7 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
         ...getSearchProps(column.name, column.type, searchHandler)
       }
     })
-    setFilteredColumns([...cols, actionColumn])
+    setFilteredColumns([...cols])
 
     // setFilteredColumns(columns)
   }
@@ -212,9 +193,8 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
           ? columns
           : [
               ...columns.filter(col => filteringValue.includes(`${col.key}`))
-              // actionColumn
             ]
-    setFilteredColumns([...cols, actionColumn])
+    setFilteredColumns([...cols])
     getRecipients()
   }
 
@@ -224,12 +204,9 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
         <h1 style={{ fontSize: 50 }}>Shipments History</h1>
       </Row>
       <Row>
-        <Col offset={18} span={5}>
+        <Col offset={21} span={3}>
           <Button onClick={() => showFilter()} type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
-          </Button>
-          <Button onClick={() => addPackage()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Package
           </Button>
         </Col>
 

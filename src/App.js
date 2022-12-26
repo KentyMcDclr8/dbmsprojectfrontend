@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons'
-import { Breadcrumb, Layout, Menu, theme } from 'antd'
 import UserHome from './Components/User/UserHome'
 import LoginPage from './Components/General/LoginPage'
 import CourierSignUp from './Components/General/CourierSignUp'
 import CustomerSignUp from './Components/General/CustomerSignUp'
 import EmployeeHome from './Components/Employee/EmployeeHome'
+import AdminHome from './Components/Admin/AdminHome'
+import CourierHome from './Components/Courier/CourierHome'
 
 const App = () => {
   const [activePage, setActivePage] = useState(<LoginPage />)
@@ -30,10 +30,11 @@ const App = () => {
         setActivePage(<EmployeeHome logoutHandler={setPage} employee={userData} />)
         break
       case 'Admin':
-        setActivePage(<UserHome logoutHandler={setPage} />)
+        setActivePage(<AdminHome logoutHandler={setPage} />)
         break
-      // case "Complaints":
-      //   setCurrentDashboard(<UserHomeDashboard/>)
+      case 'Courier':
+        setActivePage(<CourierHome logoutHandler={setPage} user={userData} />)
+        break
     }
 
     console.log('page changes')

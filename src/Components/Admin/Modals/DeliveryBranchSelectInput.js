@@ -3,7 +3,7 @@ import { Modal, Table, message, Typography, Input, Button, Space } from 'antd'
 // import { getMessageResourceKey } from '@/helper/backend_helper'
 import { SearchOutlined, CaretDownOutlined } from '@ant-design/icons'
 
-const CourierSelectInput = ({ value, onChange }) => {
+const DeliveryBranchSelectInput = ({ value, onChange }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -135,13 +135,13 @@ const CourierSelectInput = ({ value, onChange }) => {
         // border: solid 1px gray;
         // margin: 5px;
       >
-        <span>{value || <div style={{ color: '#dcdcdc' }}>Select Courier </div>}</span>
+        <span>{value || <div style={{ color: '#dcdcdc' }}>Select Delivery Branch </div>}</span>
         <span>
           <CaretDownOutlined style={{ color: '#d9d9d9' }} />
         </span>
       </div>
       <Modal
-        title='Select Courier '
+        title='Select Delivery Branch '
         visible={isModalVisible}
         onCancel={handleCancel}
         okButtonProps={{ style: { display: 'none' } }}
@@ -181,4 +181,4 @@ const CourierSelectInput = ({ value, onChange }) => {
   )
 }
 
-export default CourierSelectInput
+export default DeliveryBranchSelectInput

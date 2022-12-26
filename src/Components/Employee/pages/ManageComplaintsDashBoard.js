@@ -88,14 +88,6 @@ const ManageComplaintsDashboard = ({ employee }) => {
       type: 'varchar'
     },
     {
-      title: 'Details',
-      id: 'details',
-      dataIndex: 'details',
-      key: 'details',
-      name: 'details',
-      type: 'varchar'
-    },
-    {
       title: 'Date Resolved',
       id: 'dateResolved',
       dataIndex: 'dateResolved',
@@ -124,10 +116,10 @@ const ManageComplaintsDashboard = ({ employee }) => {
 
   const reset = () => {
     setData([
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' },
-      { details: 'damage to package', id: 2, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Invalid Complaint' },
+      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Invalid Complaint' },
+      { details: 'Package still not delivered', id: 2, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' },
       { details: 'damage to package', id: 3, dateResolved: '14-30-20', packageId: '503', type: 'Wrong Delivery', status: 'Processing' },
-      { details: 'damage to package', id: 4, dateResolved: '14-30-20', packageId: '503', type: 'Incorrect Status', status: 'Resolved' },
+      { details: 'Package was damaged when delivered', id: 4, dateResolved: '14-30-20', packageId: '503', type: 'Processing', status: 'Resolved' },
       { details: 'damage to package', id: 5, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' }
     ])
 

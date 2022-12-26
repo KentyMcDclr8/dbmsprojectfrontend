@@ -1,6 +1,6 @@
 
-import { Row, Col, Modal, Button, Select, message, Form, Input, Tooltip, Skeleton, Space, Table, Tag, Radio } from 'antd'
-import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, ExportOutlined, FilterOutlined, PlusOutlined, FileExclamationOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
+import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton, Space, Table, Tag, Form, Input } from 'antd'
+import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined, FilterOutlined, PlusOutlined, EditOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
@@ -8,24 +8,25 @@ import { getSearchProps } from '../../SearchHelper'
 const { Option } = Select
 const { TextArea } = Input
 
-const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
-  const [form] = Form.useForm()
+const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
   const [filteringValue, setFilteringValue] = useState([]) // Array of selected column keys
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false)
 
+  const [form] = Form.useForm()
   // Pagination useStates
   const defaultPageSize = 10
   const [totalCount, setTotalCount] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
   const [currentPageSize, setCurrentPageSize] = useState(defaultPageSize)
 
-  const [complaintModal, setComplaintModal] = useState(false)
-  const [activePackageId, setActivePackageId] = useState(null)
   // Table
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
+
+  const [complaintModal, setComplaintModal] = useState(false)
+  const [activePackageId, setActivePackageId] = useState(null)
 
   const actionColumn = {
 
@@ -35,55 +36,40 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
     width: 100,
     render: (_, record) => (
       <Space size='middle'>
-
         <Tooltip
-          title='Submit Complaint'
+          title='Edit Recipient'
         >
-          <FileExclamationOutlined style={{ color: '#dd525f' }} onClick={() => onComplaintHandler(record.id)} />
+          <EditOutlined style={{ color: '#2196fc' }} onClick={() => onComplaintHandler(record)} />
         </Tooltip>
 
       </Space>
     )
   }
 
-  const onComplaintHandler = (id) => {
-    console.log(`Record with id:${id} is deleted`)
-    setActivePackageId(id)
-    setComplaintModal(true)
-    // setIsLoading(true)
-    // deleteRecipient( id)
-    //   .then(_ => {
-    //     message.success(`Record with id:${id} is deleted`)
-    //   })
-    //   .catch(e => message.error(e.message))
-    //   .finally(() => {
-    //     setIsLoading(false)
-    //     getRecipients()
-    // })
-  }
-
-  const complaintApiCall = () => {
-    // TODO
-    setComplaintModal(false)
-    message.success('Complaint Sent Successfully')
-  }
-
-  const complaintCancelled = () => {
-    setComplaintModal(false)
-  }
-
   const tagSelector = (text) => {
     console.log('text', text)
-    if (String(text).includes('Delivered')) {
+    if (String(text).includes('Awaiting Pick-up')) {
       return (
-        <Tag icon={<CheckCircleOutlined />} color='green'>
-          Delivered
+        <Tag icon={<ExportOutlined />} color='green'>
+          Awaiting Pick-up
+        </Tag>
+      )
+    } else if (String(text).includes('On Hold')) {
+      return (
+        <Tag icon={<ExclamationCircleOutlined />} color='yellow'>
+          On Hold
+        </Tag>
+      )
+    } else if (String(text).includes('To Be Assigned')) {
+      return (
+        <Tag icon={<InboxOutlined />} color='volcano'>
+          To Be Assigned
         </Tag>
       )
     } else {
       return (
-        <Tag icon={<CloseCircleOutlined />} color='volcano'>
-          Cancelled
+        <Tag icon={<SyncOutlined />} color='blue'>
+          On the way
         </Tag>
       )
     }
@@ -143,13 +129,13 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
 
   const reset = () => {
     setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Cancelled' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Cancelled' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' }
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
+      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
     ])
 
     let cols = []
@@ -168,9 +154,11 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
     reset()
   }, [])
 
-  const onEditRowHandler = () => {
+  const onHoldHandler = (id) => {
     // TODO
 
+    setActivePackageId(id)
+    message.success('Package Hold Request Sent Successfully')
   }
 
   const handleSorting = () => {
@@ -218,19 +206,46 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
     getRecipients()
   }
 
+  const onComplaintHandler = (id) => {
+    console.log(`Record with id:${id} is deleted`)
+    setActivePackageId(id)
+    setComplaintModal(true)
+    form.resetFields()
+    // setIsLoading(true)
+    // deleteRecipient( id)
+    //   .then(_ => {
+    //     message.success(`Record with id:${id} is deleted`)
+    //   })
+    //   .catch(e => message.error(e.message))
+    //   .finally(() => {
+    //     setIsLoading(false)
+    //     getRecipients()
+    // })
+  }
+
+  const complaintApiCall = () => {
+    // TODO
+    setComplaintModal(false)
+    form.resetFields()
+    message.success('Complaint Sent Successfully')
+  }
+
+  const complaintCancelled = () => {
+    setComplaintModal(false)
+    form.resetFields()
+  }
+
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Shipments History</h1>
+        <h1 style={{ fontSize: 50 }}>Active Shipments</h1>
       </Row>
       <Row>
-        <Col offset={18} span={5}>
+        <Col offset={21} span={3}>
           <Button onClick={() => showFilter()} type='primary' icon={<FilterOutlined />} style={{ alignContent: 'right', marginRight: 30 }}>
             Filter
           </Button>
-          <Button onClick={() => addPackage()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Package
-          </Button>
+
         </Col>
 
         <Row>
@@ -291,7 +306,7 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
           </Select>
         </Modal>
         <Modal
-          title='Create Complaint'
+          title='Edit Status'
           visible={complaintModal}
           onCancel={complaintCancelled}
           footer={null}
@@ -299,7 +314,7 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
         >
           <Form
             style={{ marginTop: '45px' }}
-            name='User Info'
+            name='Edit Status'
             form={form}
             layout='horizontal'
             labelCol={{ span: 4 }}
@@ -313,30 +328,25 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
               key='packageId'
               name='packageId'
 
-              initialValue={activePackageId === null ? null : activePackageId}
+              initialValue={activePackageId === null ? null : activePackageId.id}
             >
               <Input disabled />
             </Form.Item>
             <Form.Item
-              label='Details'
-              key='details'
-              name='details'
-              rules={[{ required: true, message: 'Missing Details' }]}
+              label='Status'
+              key='status'
+              name='status'
+              initialValue={activePackageId === null ? null : activePackageId.status}
+              rules={[{ required: true, message: 'Missing Status' }]}
             >
-              <TextArea rows={3} />
-            </Form.Item>
-            <Form.Item
-              label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
-              rules={[{ required: true, message: 'Missing Complaint Type' }]}
-            >
-              <Select placeholder='Choose Complaint Type'>
+              <Select placeholder='Choose Package Status'>
                 {[
-                  'Incorrect Status',
-                  'Late Delivery',
-                  'Wrong Package Deliveried',
-                  'Other'
+                  'To be assigned',
+                  'Awaiting Pick-up',
+                  'On the way',
+                  'Cancelled',
+                  'On Hold',
+                  'Delivered'
                 ].map(type => (
                   <Select.Option key={type} value={type}>
                     {type}
@@ -359,10 +369,11 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
 
           </Form>
         </Modal>
+
       </Row>
     </>
 
   )
 }
 
-export default ShipmentsHistoryDashboard
+export default ActiveShipmentsDashboard

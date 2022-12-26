@@ -7,7 +7,7 @@ import { getSearchProps } from '../../SearchHelper'
 
 const { Option } = Select
 
-const RecipientListDashboard = (user) => {
+const EmployeeAccountsDashboard = () => {
   const [form] = Form.useForm()
   const [formUpdate] = Form.useForm()
 
@@ -219,7 +219,7 @@ const RecipientListDashboard = (user) => {
   return (
     <>
       <Row className='table-form-comp'>
-        <h1 style={{ fontSize: 50 }}>Recipient List</h1>
+        <h1 style={{ fontSize: 50 }}>Employee Accounts</h1>
       </Row>
       <Row>
         <Col offset={18} span={5}>
@@ -227,7 +227,7 @@ const RecipientListDashboard = (user) => {
             Filter
           </Button>
           <Button onClick={() => onAddToTable()} type='primary' icon={<PlusOutlined />} style={{ float: 'right', marginRight: 30 }}>
-            Create New Recipient
+            Create New Employee
           </Button>
         </Col>
 
@@ -289,7 +289,7 @@ const RecipientListDashboard = (user) => {
           </Select>
         </Modal>
         <Modal
-          title='Add New Recipient'
+          title='Add New Employee'
           visible={addModal}
           onCancel={handleCancelAdd}
           footer={null}
@@ -377,7 +377,7 @@ const RecipientListDashboard = (user) => {
           </Form>
         </Modal>
         <Modal
-          title='Update Recipient Information'
+          title='Update Employee Information'
           visible={updateModal}
           onCancel={handleCancelUpdate}
           footer={null}
@@ -477,4 +477,4 @@ const RecipientListDashboard = (user) => {
   )
 }
 
-export default RecipientListDashboard
+export default EmployeeAccountsDashboard

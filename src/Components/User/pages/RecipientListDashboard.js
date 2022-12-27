@@ -4,7 +4,7 @@ import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutli
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
-import { getUserRecipients, addRecipient, deleteReciepient } from '../../../ApiHelper/backend_helper'
+import { getUserRecipients, addRecipient, deleteReciepient, updateRecipient } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 
@@ -63,7 +63,7 @@ const RecipientListDashboard = (user) => {
 
   const columns = [
     {
-      title: 'Recipient_id',
+      title: 'Recipient ID',
       dataIndex: 'recipient_id',
       key: 'recipient_id',
       id: 'recipient_id',
@@ -140,6 +140,8 @@ const RecipientListDashboard = (user) => {
         console.log(e)
       })
       .finally(() => {
+        form.resetFields()
+        formUpdate.resetFields()
       })
 
     let cols = []
@@ -161,6 +163,7 @@ const RecipientListDashboard = (user) => {
   const onEditRowHandler = (record) => {
     // TODO
     setActiveRecord(record)
+    formUpdate.resetFields()
     setUpdateModal(true)
   }
 
@@ -183,6 +186,7 @@ const RecipientListDashboard = (user) => {
     // TODO
     setAddModal(true)
     form.resetFields()
+    formUpdate.resetFields()
   }
 
   const addApiCall = (values) => {
@@ -197,6 +201,7 @@ const RecipientListDashboard = (user) => {
       })
       .finally(() => {
         form.resetFields()
+        formUpdate.resetFields()
         reset()
       })
 
@@ -205,11 +210,23 @@ const RecipientListDashboard = (user) => {
     // form.resetFields()
   }
 
-  const updateApiCall = () => {
+  const updateApiCall = (values) => {
+    updateRecipient(values.recipient_id, values)
+      .then((data) => {
+        // setColumnData(colData)
+        message.success('Recipient Information Updated Successfully')
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+        formUpdate.resetFields()
+        reset()
+      })
     // TODO
     setUpdateModal(false)
-    form.resetFields()
-    message.success('Recipient Information Updated Successfully')
   }
 
   // column filter/visibility functioanlity
@@ -244,6 +261,8 @@ const RecipientListDashboard = (user) => {
 
   const handleCancelUpdate = () => {
     setUpdateModal(false)
+
+    formUpdate.resetFields()
   }
   const onRemoveRecordHandler = (id) => {
     console.log(`Record with id:${id} is deleted`)
@@ -437,6 +456,14 @@ const RecipientListDashboard = (user) => {
             colon
           >
             <Form.Item
+              label='ID'
+              key='recipient_id'
+              name='recipient_id'
+              initialValue={activeRecord === null ? null : activeRecord.recipient_id}
+            >
+              <Input disabled maxLength={255} />
+            </Form.Item>
+            <Form.Item
               label='Name'
               key='name'
               name='name'
@@ -465,18 +492,18 @@ const RecipientListDashboard = (user) => {
             </Form.Item>
             <Form.Item
               label='Building No'
-              key='buildingNo'
-              name='buildingNo'
-              initialValue={activeRecord === null ? null : activeRecord.buildingNo}
+              key='buildingNumber'
+              name='buildingNumber'
+              initialValue={activeRecord === null ? null : activeRecord.buildingNumber}
               rules={[{ required: true, message: 'Missing Building No' }]}
             >
               <Input maxLength={255} />
             </Form.Item>
             <Form.Item
               label='Street No'
-              key='streetNo'
-              name='streetNo'
-              initialValue={activeRecord === null ? null : activeRecord.streetNo}
+              key='streetNumber'
+              name='streetNumber'
+              initialValue={activeRecord === null ? null : activeRecord.streetNumber}
               rules={[{ required: true, message: 'Missing Street No' }]}
             >
               <Input maxLength={255} />

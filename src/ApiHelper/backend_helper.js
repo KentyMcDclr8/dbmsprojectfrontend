@@ -18,7 +18,7 @@ export const customerSignUpAPI = async (customer) => {
 }
 
 export const updateCustomer = async (userId, customer) => {
-  return await postFetcher(url.CUSTOMER_UPDATE(userId), customer)
+  return await putFetcher(url.CUSTOMER_UPDATE(userId), customer)
 }
 
 export const courierSignUpAPI = async (courier) => {
@@ -29,8 +29,12 @@ export const createPackage = async (userId, data) => {
   return await postFetcher(url.CREATE_PACKAGE(userId), data)
 }
 
-export const getUserPackages = async (userId) => {
-  return await getFetcher(url.CREATE_PACKAGE(userId))
+export const getUserPackagesInactive = async (userId) => {
+  return await getFetcher(url.GET_INACTIVE_PACKAGES(userId))
+}
+
+export const getUserPackagesActive = async (userId) => {
+  return await getFetcher(url.GET_ACTIVE_PACKAGES(userId))
 }
 
 export const getUserPayments = async (userId) => {
@@ -45,10 +49,48 @@ export const addRecipient = async (userId, body) => {
   return await postFetcher(url.GET_USER_RECIPIENTS(userId), body)
 }
 
+export const updateRecipient = async (recipientId, body) => {
+  return await putFetcher(url.GET_USER_RECIPIENTS(recipientId), body)
+}
+
+export const updatePackage = async (id, body) => {
+  return await putFetcher(url.CREATE_PACKAGE(id), body)
+}
+
 export const deleteReciepient = async (recipientId) => {
   return await deleteFetcher(url.GET_USER_RECIPIENTS(recipientId))
 }
 
 export const getPackagePrice = async (body) => {
   return await postFetcher(url.PACKAGE_PRICE, body)
+}
+
+export const getAllPackages = async () => {
+  return await getFetcher(url.GET_PACKAGES)
+}
+
+export const getAllCourier = async () => {
+  return await getFetcher(url.GET_COURIER)
+}
+
+export const getAllComplaints = async () => {
+  return await getFetcher(url.GET_COMPLAINT)
+}
+export const getUserComplaints = async (userId) => {
+  return await getFetcher(url.GET_COMPLAINT(userId))
+}
+export const createComplaint = async (packageId, userId, body) => {
+  return await postFetcher(url.CREATE_COMPLAINT(packageId, userId), body)
+}
+
+export const createPaymentMethod = async (userId, body) => {
+  return await postFetcher(url.GET_USER_PAYMENTS(userId), body)
+}
+
+export const deletePaymentMethod = async (accountNo, userId) => {
+  return await deleteFetcher(url.DELETE_PAYMENTS(accountNo, userId))
+}
+
+export const updateCourier = async (id, body) => {
+  return await putFetcher(url.UPDATE_COURIER(id), body)
 }

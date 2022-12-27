@@ -5,10 +5,11 @@ import { SyncOutlined, InboxOutlined, DeleteOutlined, ExportOutlined, FilterOutl
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
 import DeliveryBranchSelectInput from '../Modals/DeliveryBranchSelectInput'
+import { getAllCourier, updateCourier } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 
-const CourierApplicationsDashboard = ({ user, addPackage }) => {
+const CourierApplicationsDashboard = ({ employee, addPackage }) => {
   // Table column filter
   const [filteredColumns, setFilteredColumns] = useState()
   const [filteringValue, setFilteringValue] = useState([]) // Array of selected column keys
@@ -27,6 +28,11 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
 
   const [approveModal, setApproveModal] = useState(false)
   const [activeCourierId, setActiveCourierId] = useState(null)
+  const [activeCourier, setActiveCourier] = useState(null)
+
+  useEffect(() => {
+    reset()
+  }, [employee])
 
   const actionColumn = {
 
@@ -39,7 +45,7 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
         <Tooltip
           title='Approve Courier'
         >
-          <CheckCircleOutlined style={{ color: 'green' }} onClick={() => onApproveHandler(record.id)} />
+          <CheckCircleOutlined style={{ color: 'green' }} onClick={() => onApproveHandler(record)} />
         </Tooltip>
         <Tooltip
           title='Reject Courier'
@@ -60,19 +66,11 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
       type: 'number'
     },
     {
-      title: 'Courier Name',
+      title: 'Name',
       id: 'name',
       dataIndex: 'name',
       key: 'name',
       name: 'name',
-      type: 'varchar'
-    },
-    {
-      title: 'Email',
-      id: 'email',
-      dataIndex: 'email',
-      key: 'email',
-      name: 'email',
       type: 'varchar'
     },
     {
@@ -82,19 +80,29 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
       key: 'phone',
       name: 'phone',
       type: 'number'
+    },
+    {
+      title: 'Email',
+      id: 'email',
+      dataIndex: 'email',
+      key: 'email',
+      name: 'email',
+      type: 'varchar'
     }
   ]
 
   const reset = () => {
-    setData([
-      { name: 'ather', id: 1, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' },
-      { name: 'ather', id: 12, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' },
-      { name: 'ather', id: 13, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' },
-      { name: 'ather', id: 14, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' },
-      { name: 'ather', id: 15, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' },
-      { name: 'ather', id: 16, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' },
-      { name: 'ather', id: 111, email: 'smth@gmail.com', phone: '50x34x23', description: '5 years experience in Getir, Personal Car Available and 5 days per week availability ' }
-    ])
+    getAllCourier()
+      .then((data) => {
+        setData(data.filter(courier => courier.approved === false))
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
 
     let cols = []
     cols = columns?.map((column) => {
@@ -163,8 +171,9 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
     getRecipients()
   }
 
-  const onApproveHandler = (id) => {
-    setActiveCourierId(id)
+  const onApproveHandler = (record) => {
+    setActiveCourierId(record.id)
+    setActiveCourier(record)
     setApproveModal(true)
     form.resetFields()
     // setIsLoading(true)
@@ -179,11 +188,20 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
     // })
   }
 
-  const approveCourierApiCall = () => {
+  const approveCourierApiCall = (values) => {
     // TODO
+    const temp = activeCourier
+    temp.approved = true
+    updateCourier(values.courierId, temp)
+      .then(_ => {
+        message.success('Courier Approved Successfully')
+      })
+      .catch(e => message.error(e.message))
+      .finally(() => {
+        reset()
+      })
     setApproveModal(false)
     form.resetFields()
-    message.success('Courier Approved Successfully')
   }
 
   const approvalCancelled = () => {
@@ -242,7 +260,7 @@ const CourierApplicationsDashboard = ({ user, addPackage }) => {
                             margin: 0
                           }}
                         >
-                          {record.description == null ? null : record.description}
+                          {record.applicationReason == null ? null : record.applicationReason}
                         </p>
                       )
                       // rowExpandable: true,

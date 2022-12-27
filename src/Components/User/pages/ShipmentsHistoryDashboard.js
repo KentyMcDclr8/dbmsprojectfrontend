@@ -4,6 +4,7 @@ import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, Ex
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
+import { getUserPackagesInactive } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -26,6 +27,10 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
   // Table
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
+
+  useEffect(() => {
+    reset()
+  }, [user])
 
   const actionColumn = {
 
@@ -74,7 +79,7 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
 
   const tagSelector = (text) => {
     console.log('text', text)
-    if (String(text).includes('Delivered')) {
+    if (String(text).includes('livered')) {
       return (
         <Tag icon={<CheckCircleOutlined />} color='green'>
           Delivered
@@ -99,14 +104,6 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
       type: 'number'
     },
     {
-      title: 'Recipient Name',
-      id: 'name',
-      dataIndex: 'name',
-      key: 'name',
-      name: 'name',
-      type: 'varchar'
-    },
-    {
       title: 'Weight',
       id: 'weight',
       dataIndex: 'weight',
@@ -115,11 +112,11 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
       type: 'varchar'
     },
     {
-      title: 'Dimensions',
-      id: 'dimensions',
-      dataIndex: 'dimensions',
-      key: 'dimensions',
-      name: 'dimensions',
+      title: 'Volume',
+      id: 'volume',
+      dataIndex: 'volume',
+      key: 'volume',
+      name: 'volume',
       type: 'varchar'
     },
     {
@@ -132,25 +129,27 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
     },
     {
       title: 'Status',
-      id: 'status',
-      dataIndex: 'status',
-      key: 'status',
-      name: 'status',
-      type: 'status',
+      id: 'deliveryStatus',
+      dataIndex: 'deliveryStatus',
+      key: 'deliveryStatus',
+      name: 'deliveryStatus',
+      type: 'deliveryStatus',
       render: (text) => tagSelector(text)
     }
   ]
 
   const reset = () => {
-    setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Cancelled' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Cancelled' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Delivered' }
-    ])
+    getUserPackagesInactive(user.id)
+      .then((data) => {
+        setData(data)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
 
     let cols = []
     cols = columns?.map((column) => {
@@ -327,8 +326,8 @@ const ShipmentsHistoryDashboard = ({ user, addPackage }) => {
             </Form.Item>
             <Form.Item
               label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
+              key='type'
+              name='type'
               rules={[{ required: true, message: 'Missing Complaint Type' }]}
             >
               <Select placeholder='Choose Complaint Type'>

@@ -1,10 +1,11 @@
 
 import { Row, Col, Modal, Button, Select, message, Popconfirm, Tooltip, Skeleton, Space, Table, Tag, Form, Input } from 'antd'
-import { SyncOutlined, InboxOutlined, CarOutlined, ExportOutlined, FilterOutlined, EditOutlined, ExclamationCircleOutlined, HistoryOutlined, SearchOutlined } from '@ant-design/icons'
+import { SyncOutlined, InboxOutlined, CarOutlined, ExportOutlined, FilterOutlined, EditOutlined, CloseCircleOutlined, ExclamationCircleOutlined, CheckCircleOutlined, SearchOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
 import CourierSelectInput from '../Modals/CourierSelectInput'
+import { getAllPackages, updatePackage } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -31,6 +32,14 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
 
   const [activePackage, setActivePackage] = useState(null)
 
+  // useEffect(() => {
+  //   form.resetFields()
+  // }, [onEditHandler])
+
+  useEffect(() => {
+    reset()
+  }, [employee])
+
   const actionColumn = {
 
     title: 'Action',
@@ -56,22 +65,34 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
 
   const tagSelector = (text) => {
     console.log('text', text)
-    if (String(text).includes('Awaiting Pick-up')) {
+    if (String(text).includes('waiting')) {
       return (
         <Tag icon={<ExportOutlined />} color='green'>
           Awaiting Pick-up
         </Tag>
       )
-    } else if (String(text).includes('On Hold')) {
+    } else if (String(text).includes('old')) {
       return (
         <Tag icon={<ExclamationCircleOutlined />} color='yellow'>
           On Hold
         </Tag>
       )
-    } else if (String(text).includes('To Be Assigned')) {
+    } else if (String(text).includes('ssigned')) {
       return (
         <Tag icon={<InboxOutlined />} color='volcano'>
           To Be Assigned
+        </Tag>
+      )
+    } else if (String(text).includes('ancelled')) {
+      return (
+        <Tag icon={<CloseCircleOutlined />} color='red'>
+          Cancelled
+        </Tag>
+      )
+    } else if (String(text).includes('Delivered')) {
+      return (
+        <Tag icon={<CheckCircleOutlined />} color='green'>
+          Delivered
         </Tag>
       )
     } else {
@@ -92,14 +113,14 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
       name: 'id',
       type: 'number'
     },
-    {
-      title: 'Recipient Name',
-      id: 'name',
-      dataIndex: 'name',
-      key: 'name',
-      name: 'name',
-      type: 'varchar'
-    },
+    // {
+    //   title: 'Recipient Name',
+    //   id: 'name',
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   name: 'name',
+    //   type: 'varchar'
+    // },
     {
       title: 'Weight',
       id: 'weight',
@@ -109,11 +130,11 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
       type: 'varchar'
     },
     {
-      title: 'Dimensions',
-      id: 'dimensions',
-      dataIndex: 'dimensions',
-      key: 'dimensions',
-      name: 'dimensions',
+      title: 'Volume',
+      id: 'volume',
+      dataIndex: 'volume',
+      key: 'volume',
+      name: 'volume',
       type: 'varchar'
     },
     {
@@ -126,25 +147,27 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
     },
     {
       title: 'Status',
-      id: 'status',
-      dataIndex: 'status',
-      key: 'status',
-      name: 'status',
-      type: 'status',
+      id: 'deliveryStatus',
+      dataIndex: 'deliveryStatus',
+      key: 'deliveryStatus',
+      name: 'deliveryStatus',
+      type: 'deliveryStatus',
       render: (text) => tagSelector(text)
     }
   ]
 
   const reset = () => {
-    setData([
-      { name: 'ather', id: 12, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 13, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
-      { name: 'ather', id: 111, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 15, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
-      { name: 'ather', id: 16, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 17, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 11, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
-    ])
+    getAllPackages()
+      .then((data) => {
+        setData(data)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
 
     let cols = []
     cols = columns?.map((column) => {
@@ -223,29 +246,35 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
     form.resetFields()
     setEditModal(true)
     // setIsLoading(true)
-    // deleteRecipient( id)
-    //   .then(_ => {
-    //     message.success(`Record with id:${id} is deleted`)
-    //   })
-    //   .catch(e => message.error(e.message))
-    //   .finally(() => {
-    //     setIsLoading(false)
-    //     getRecipients()
-    // })
   }
 
-  const editApiCall = () => {
+  const editApiCall = (values) => {
     // TODO
+    updatePackage(values.packageId, values)
+      .then(_ => {
+        message.success('Status Updated Successfully')
+      })
+      .catch(e => message.error(e.message))
+      .finally(() => {
+        reset()
+      })
+
     setEditModal(false)
     form.resetFields()
-    message.success('Status Updated Successfully')
   }
 
-  const courierApiCall = () => {
+  const courierApiCall = (values) => {
+    updatePackage(values.packageId, { deliveryStatus: 'Awaiting Pick-up' })
+      .then(_ => {
+        message.success('Courier Assigned Successfully')
+      })
+      .catch(e => message.error(e.message))
+      .finally(() => {
+        reset()
+      })
     // TODO
     setCourierModal(false)
     form.resetFields()
-    message.success('Courier Assigned Successfully')
   }
 
   const editCancelled = () => {
@@ -353,7 +382,7 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
               key='courierId'
               name='courierId'
               initialValue={activePackage === null ? null : activePackage.courierId}
-              rules={[{ required: true, message: 'Missing Status' }]}
+              rules={[{ required: true, message: 'Missing Courier ID' }]}
             >
               <CourierSelectInput />
             </Form.Item>
@@ -401,9 +430,9 @@ const ManagePackagesDashboard = ({ employee, addPackage }) => {
             </Form.Item>
             <Form.Item
               label='Status'
-              key='status'
-              name='status'
-              initialValue={activePackage === null ? null : activePackage.status}
+              key='deliveryStatus'
+              name='deliveryStatus'
+              initialValue={activePackage === null ? null : activePackage.deliveryStatus}
               rules={[{ required: true, message: 'Missing Status' }]}
             >
               <Select placeholder='Choose Package Status'>

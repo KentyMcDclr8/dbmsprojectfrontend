@@ -43,6 +43,8 @@ const AddPackage = ({ user, goBack }) => {
     // TODO
     // createPackage
 
+    values.deliveryStatus = 'To be Assigned'
+
     createPackage(user.id, values)
       .then(() => {
         message.success('Package Created Successfully')
@@ -68,7 +70,7 @@ const AddPackage = ({ user, goBack }) => {
     getPackagePrice(values)
       .then((data) => {
         Modal.confirm({
-          title: 'Total Cost = TL' + data,
+          title: 'Total Cost = ' + data + ' TL',
           content: 'Are you sure you want to proceed with the package delivery?',
           bodyStyle: { fontWeight: '600', paddingTop: '10px' },
           okText: 'Confirm',
@@ -80,7 +82,6 @@ const AddPackage = ({ user, goBack }) => {
         console.log(e)
       })
       .finally(() => {
-        form.resetFields()
       })
   }
 
@@ -104,8 +105,8 @@ const AddPackage = ({ user, goBack }) => {
       >
         <Form.Item
           label='Package Type'
-          key='packageType'
-          name='packageType'
+          key='type'
+          name='type'
           rules={[{ required: true, message: 'Missing Package Type' }]}
         >
           <Select placeholder='Choose Package Type'>

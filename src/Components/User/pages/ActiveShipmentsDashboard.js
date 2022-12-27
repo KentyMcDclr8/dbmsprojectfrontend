@@ -4,7 +4,7 @@ import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined,
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
-import { getUserPackages } from '../../../ApiHelper/backend_helper'
+import { getUserPackagesActive, createComplaint } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -59,19 +59,19 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
   const tagSelector = (text) => {
     console.log('text', text)
-    if (String(text).includes('Awaiting Pick-up')) {
+    if (String(text).includes('aiting')) {
       return (
         <Tag icon={<ExportOutlined />} color='green'>
           Awaiting Pick-up
         </Tag>
       )
-    } else if (String(text).includes('On Hold')) {
+    } else if (String(text).includes('old')) {
       return (
         <Tag icon={<ExclamationCircleOutlined />} color='yellow'>
           On Hold
         </Tag>
       )
-    } else if (String(text).includes('To Be Assigned')) {
+    } else if (String(text).includes('ssigned')) {
       return (
         <Tag icon={<InboxOutlined />} color='volcano'>
           To Be Assigned
@@ -95,14 +95,14 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
       name: 'id',
       type: 'number'
     },
-    {
-      title: 'Recipient Name',
-      id: 'name',
-      dataIndex: 'name',
-      key: 'name',
-      name: 'name',
-      type: 'varchar'
-    },
+    // {
+    //   title: 'Recipient Name',
+    //   id: 'name',
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   name: 'name',
+    //   type: 'varchar'
+    // },
     {
       title: 'Weight',
       id: 'weight',
@@ -129,17 +129,17 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     },
     {
       title: 'Status',
-      id: 'status',
-      dataIndex: 'status',
-      key: 'status',
-      name: 'status',
-      type: 'status',
+      id: 'deliveryStatus',
+      dataIndex: 'deliveryStatus',
+      key: 'deliveryStatus',
+      name: 'deliveryStatus',
+      type: 'deliveryStatus',
       render: (text) => tagSelector(text)
     }
   ]
 
   const reset = () => {
-    getUserPackages(user.id)
+    getUserPackagesActive(user.id)
       .then((data) => {
         setData(data)
       })
@@ -169,8 +169,13 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   const onHoldHandler = (id) => {
     // TODO
 
-    setActivePackageId(id)
-    message.success('Package Hold Request Sent Successfully')
+    createComplaint(id, user.id, { details: 'Hold Request', type: 'Place Package on hold' })
+      .then(_ => {
+        message.success('Package Hold Request Sent Successfully')
+      })
+      .catch(e => message.error(e.message))
+      .finally(() => {
+      })
   }
 
   const handleSorting = () => {
@@ -235,11 +240,19 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     // })
   }
 
-  const complaintApiCall = () => {
+  const complaintApiCall = (values) => {
     // TODO
+
+    createComplaint(values.packageId, user.id, values)
+      .then(_ => {
+        message.success('Complaint Sent Successfully')
+      })
+      .catch(e => message.error(e.message))
+      .finally(() => {
+      })
+
     setComplaintModal(false)
     form.resetFields()
-    message.success('Complaint Sent Successfully')
   }
 
   const complaintCancelled = () => {
@@ -356,8 +369,8 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
             </Form.Item>
             <Form.Item
               label='Complaint Type'
-              key='complaintType'
-              name='complaintType'
+              key='type'
+              name='type'
               rules={[{ required: true, message: 'Missing Complaint Type' }]}
             >
               <Select placeholder='Choose Complaint Type'>

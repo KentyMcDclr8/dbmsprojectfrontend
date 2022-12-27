@@ -4,10 +4,11 @@ import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutli
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
+import { getAllCourier } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 
-const CourierAccountsDashboard = (user) => {
+const CourierAccountsDashboard = (employee) => {
   const [form] = Form.useForm()
   const [formUpdate] = Form.useForm()
 
@@ -29,6 +30,10 @@ const CourierAccountsDashboard = (user) => {
   // Table
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
+
+  useEffect(() => {
+    reset()
+  }, [employee])
 
   const actionColumn = {
 
@@ -74,14 +79,6 @@ const CourierAccountsDashboard = (user) => {
       type: 'varchar'
     },
     {
-      title: 'Address',
-      id: 'address',
-      dataIndex: 'address',
-      key: 'address',
-      name: 'address',
-      type: 'varchar'
-    },
-    {
       title: 'Phone',
       id: 'phone',
       dataIndex: 'phone',
@@ -100,16 +97,17 @@ const CourierAccountsDashboard = (user) => {
   ]
 
   const reset = () => {
-    setData([
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
-    ])
+    getAllCourier()
+      .then((data) => {
+        setData(data.filter(courier => courier.approved === true))
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
 
     let cols = []
     cols = columns?.map((column) => {

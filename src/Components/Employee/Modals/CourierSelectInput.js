@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Modal, Table, message, Typography, Input, Button, Space } from 'antd'
 // import { getMessageResourceKey } from '@/helper/backend_helper'
 import { SearchOutlined, CaretDownOutlined } from '@ant-design/icons'
+import { getAllCourier } from '../../../ApiHelper/backend_helper'
 
 const CourierSelectInput = ({ value, onChange }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -16,35 +17,16 @@ const CourierSelectInput = ({ value, onChange }) => {
 
   useEffect(() => {
     if (isModalVisible) {
-      // setIsLoading(true)
-      // getRecipients()
-      //   .then(data => {
-      //     console.log('dataKey', data)
-
-      //     const colData = data.data.map(d => ({
-      //       ...d,
-      //       id: d.id,
-      //       key: d.id
-      //     }))
-
-      //     setData(colData)
-      //   })
-      //   .catch(e => {
-      //     message.error('Error has occurred! ' + e.message)
-      //   })
-      //   .finally(() => {
-      //     setIsLoading(false)
-      //   })
-      setData([
-        { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 12, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 13, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 142, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 124, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 112, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 1111, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 1231, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
-      ])
+      getAllCourier()
+        .then((data) => {
+          setData(data)
+        })
+        .catch(e => {
+          message.error(e.message)
+          console.log(e)
+        })
+        .finally(() => {
+        })
     }
   }, [isModalVisible])
 
@@ -87,14 +69,6 @@ const CourierSelectInput = ({ value, onChange }) => {
       dataIndex: 'name',
       key: 'name',
       name: 'name',
-      type: 'varchar'
-    },
-    {
-      title: 'Address',
-      id: 'address',
-      dataIndex: 'address',
-      key: 'address',
-      name: 'address',
       type: 'varchar'
     },
     {

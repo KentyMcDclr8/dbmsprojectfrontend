@@ -1,6 +1,7 @@
 import React from 'react'
 import { UserOutlined, IdcardOutlined } from '@ant-design/icons'
 import { Button, Layout, Input, Row, Form, theme, message } from 'antd'
+import { customerSignUpAPI } from '../../ApiHelper/backend_helper'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -19,10 +20,23 @@ const CustomerSignUp = ({ changePage }) => {
     changePage('Courier Sign-up')
   }
 
-  const submitHandler = (id) => {
+  const submitHandler = (values) => {
+    //
+    customerSignUpAPI(values)
+      .then((data) => {
+        // setColumnData(colData)
+        message.success(`User signed up successfully. Your user ID = ${data}`)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
+
     console.log('Login')
     changePage('Login')
-    message.success('Your Application has been submitted successfully. Please check your email for more information')
   }
 
   return (
@@ -111,16 +125,16 @@ const CustomerSignUp = ({ changePage }) => {
               </Form.Item>
               <Form.Item
                 label='Building No'
-                key='buildingNo'
-                name='buildingNo'
+                key='buildingNumber'
+                name='buildingNumber'
                 rules={[{ required: true, message: 'Missing Building No' }]}
               >
                 <Input maxLength={255} />
               </Form.Item>
               <Form.Item
                 label='Street No'
-                key='streetNo'
-                name='streetNo'
+                key='streetNumber'
+                name='streetNumber'
                 rules={[{ required: true, message: 'Missing Street No' }]}
               >
                 <Input maxLength={255} />

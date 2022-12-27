@@ -35,18 +35,19 @@ const LoginPage = ({ changePage, setUserData }) => {
           changePage('User')
         } else if (data.type == 'Employee') {
           changePage('Employee')
-        } else if (data.id == 353) {
+        } else if (data.type == 'Admin') {
           changePage('Admin')
+        } else if (data.type == 'Courier') {
+          changePage('Courier')
         }
         message.success('Login Successful')
       })
       .catch(e => {
-        message.error('Invalid User ID or Password')
-        if (values.id == 353) {
-          changePage('Admin')
-        }
-        if (values.id == 11) {
-          changePage('Courier')
+        console.log('e.message', e)
+        if (e.message === 'Courier is not approved') {
+          message.error('Courier is not approved yet')
+        } else {
+          message.error('Invalid User ID or Password')
         }
       })
       .finally(() => {

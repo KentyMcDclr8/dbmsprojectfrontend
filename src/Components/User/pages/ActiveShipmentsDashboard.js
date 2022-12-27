@@ -4,6 +4,7 @@ import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined,
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
+import { getUserPackages } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -27,6 +28,10 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
 
   const [complaintModal, setComplaintModal] = useState(false)
   const [activePackageId, setActivePackageId] = useState(null)
+
+  useEffect(() => {
+    reset()
+  }, [user])
 
   const actionColumn = {
 
@@ -107,11 +112,11 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
       type: 'varchar'
     },
     {
-      title: 'Dimensions',
-      id: 'dimensions',
-      dataIndex: 'dimensions',
-      key: 'dimensions',
-      name: 'dimensions',
+      title: 'Volume',
+      id: 'volume',
+      dataIndex: 'volume',
+      key: 'volume',
+      name: 'volume',
       type: 'varchar'
     },
     {
@@ -134,15 +139,16 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   ]
 
   const reset = () => {
-    setData([
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On Hold' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'On the way' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'Awaiting Pick-up' },
-      { name: 'ather', id: 1, weight: '300', dimensions: '50x34x23', type: 'Fragile', status: 'To Be Assigned' }
-    ])
+    getUserPackages(user.id)
+      .then((data) => {
+        setData(data)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+      })
 
     let cols = []
     cols = columns?.map((column) => {

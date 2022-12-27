@@ -4,6 +4,7 @@ import { FilterOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutli
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
+import { getUserRecipients, addRecipient, deleteReciepient } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 
@@ -30,6 +31,10 @@ const RecipientListDashboard = (user) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
 
+  useEffect(() => {
+    reset()
+  }, [user])
+
   const actionColumn = {
 
     title: 'Action',
@@ -47,7 +52,7 @@ const RecipientListDashboard = (user) => {
 
         <Popconfirm
           title='Are you sure you want to delete this Recipient'
-          onConfirm={() => onRemoveRecordHandler(record.id)}
+          onConfirm={() => onRemoveRecordHandler(record.recipient_id)}
         >
           <DeleteOutlined style={{ color: '#ce1a2a' }} />
         </Popconfirm>
@@ -58,11 +63,11 @@ const RecipientListDashboard = (user) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      id: 'id',
-      name: 'id',
+      title: 'Recipient_id',
+      dataIndex: 'recipient_id',
+      key: 'recipient_id',
+      id: 'recipient_id',
+      name: 'recipient_id',
       type: 'number'
     },
     {
@@ -71,14 +76,6 @@ const RecipientListDashboard = (user) => {
       dataIndex: 'name',
       key: 'name',
       name: 'name',
-      type: 'varchar'
-    },
-    {
-      title: 'Address',
-      id: 'address',
-      dataIndex: 'address',
-      key: 'address',
-      name: 'address',
       type: 'varchar'
     },
     {
@@ -96,20 +93,54 @@ const RecipientListDashboard = (user) => {
       key: 'email',
       name: 'email',
       type: 'varchar'
+    },
+    {
+      title: 'Building Number',
+      id: 'buildingNumber',
+      dataIndex: 'buildingNumber',
+      key: 'buildingNumber',
+      name: 'buildingNumber',
+      type: 'number'
+    },
+    {
+      title: 'Street Number',
+      id: 'streetNumber',
+      dataIndex: 'streetNumber',
+      key: 'streetNumber',
+      name: 'streetNumber',
+      type: 'number'
+    },
+    {
+      title: 'City',
+      id: 'city',
+      dataIndex: 'city',
+      key: 'city',
+      name: 'city',
+      type: 'varchar'
+    },
+    {
+      title: 'Province',
+      id: 'province',
+      dataIndex: 'province',
+      key: 'province',
+      name: 'province',
+      type: 'varchar'
     }
   ]
 
   const reset = () => {
-    setData([
-      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-      { name: 'notAther', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
-    ])
+    console.log('user in recipient', user)
+
+    getUserRecipients(user.user.id)
+      .then((data) => {
+        setData(data)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+      })
 
     let cols = []
     cols = columns?.map((column) => {
@@ -154,11 +185,24 @@ const RecipientListDashboard = (user) => {
     form.resetFields()
   }
 
-  const addApiCall = () => {
+  const addApiCall = (values) => {
+    addRecipient(user.user.id, values)
+      .then((data) => {
+      // setColumnData(colData)
+        message.success('Recipient Added Successfully')
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+        reset()
+      })
+
     // TODO
     setAddModal(false)
-    form.resetFields()
-    message.success('Recipient Added Successfully')
+    // form.resetFields()
   }
 
   const updateApiCall = () => {
@@ -203,17 +247,15 @@ const RecipientListDashboard = (user) => {
   }
   const onRemoveRecordHandler = (id) => {
     console.log(`Record with id:${id} is deleted`)
-    message.success(`Recipient with ID:${id} is deleted`)
     // setIsLoading(true)
-    // deleteRecipient( id)
-    //   .then(_ => {
-    //     message.success(`Record with id:${id} is deleted`)
-    //   })
-    //   .catch(e => message.error(e.message))
-    //   .finally(() => {
-    //     setIsLoading(false)
-    //     getRecipients()
-    // })
+    deleteReciepient(id)
+      .then(_ => {
+        message.success(`Recipient with ID:${id} is deleted`)
+      })
+      .catch(e => message.error(e.message))
+      .finally(() => {
+        reset()
+      })
   }
 
   return (
@@ -332,16 +374,16 @@ const RecipientListDashboard = (user) => {
             </Form.Item>
             <Form.Item
               label='Building No'
-              key='buildingNo'
-              name='buildingNo'
+              key='buildingNumber'
+              name='buildingNumber'
               rules={[{ required: true, message: 'Missing Building No' }]}
             >
               <Input maxLength={255} />
             </Form.Item>
             <Form.Item
               label='Street No'
-              key='streetNo'
-              name='streetNo'
+              key='streetNumber'
+              name='streetNumber'
               rules={[{ required: true, message: 'Missing Street No' }]}
             >
               <Input maxLength={255} />

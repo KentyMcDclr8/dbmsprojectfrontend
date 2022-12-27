@@ -1,6 +1,7 @@
 import React from 'react'
 import { UserOutlined, UserAddOutlined } from '@ant-design/icons'
 import { message, Button, Layout, Input, Row, Form, theme } from 'antd'
+import { courierSignUpAPI } from '../../ApiHelper/backend_helper'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -21,10 +22,21 @@ const LoginPage = ({ changePage }) => {
     changePage('Login')
   }
 
-  const submitHandler = (id) => {
-    console.log('Logind')
+  const submitHandler = (values) => {
+    courierSignUpAPI(values)
+      .then((data) => {
+        // setColumnData(colData)
+        message.success(`Your Application has been submitted successfully. Your courier ID = ${data}`)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
+
     changePage('Login')
-    message.success('Your Application has been submitted successfully. Please check your email for more information')
   }
 
   return (
@@ -115,11 +127,11 @@ const LoginPage = ({ changePage }) => {
               </Form.Item>
               <Form.Item
                 label='Description'
-                key='description'
-                name='description'
+                key='applicationReason'
+                name='applicationReason'
                 rules={[{ required: true, message: 'Missing Description' }]}
               >
-                <TextArea rows={3} />
+                <TextArea placeholder='Add experience and reason for applying' rows={3} />
               </Form.Item>
               <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
                 <Button

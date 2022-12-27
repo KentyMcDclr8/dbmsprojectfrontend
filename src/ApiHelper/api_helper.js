@@ -10,8 +10,9 @@ const _handleError = async response => {
       errorData = await response.json()
     } catch {}
 
+    console.log('errorData', errorData)
     // GENERAL ERROR
-    throw new Error('Something went wrong!')
+    throw new Error(errorData.message)
   }
 }
 
@@ -23,7 +24,10 @@ const commonHeader = {
 async function _post (url, data) {
   return await fetch(url, {
     method: 'POST',
-    headers: { commonHeader },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(data)
   })
 }

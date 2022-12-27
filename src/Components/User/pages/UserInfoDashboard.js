@@ -3,6 +3,7 @@ import { Row, Input, Form, Button, message } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useState } from 'react'
+import { updateCustomer } from '../../../ApiHelper/backend_helper'
 
 const UserInfoDashboard = (user) => {
   const [form] = Form.useForm()
@@ -13,21 +14,31 @@ const UserInfoDashboard = (user) => {
     form.setFieldsValue(user.user)
   }, [user])
 
-  const updateUserInfo = () => {
+  const updateUserInfo = (values) => {
     // TODO
-    message.success('User Information Updated Successfully')
+
+    updateCustomer(user.user.id, values)
+      .then((data) => {
+        message.success('User Information Updated Successfully')
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+      })
   }
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo)
   }
 
-  const buttonClickHandler = () => {
+  const buttonClickHandler = (values) => {
     if (viewMode) {
       setViewMode(false)
     } else {
       setViewMode(true)
-      updateUserInfo()
+      updateUserInfo(values)
     }
   }
 
@@ -96,8 +107,8 @@ const UserInfoDashboard = (user) => {
         </Form.Item>
         <Form.Item
           label='Building No'
-          key='buildingNo'
-          name='buildingNo'
+          key='buildingNumber'
+          name='buildingNumber'
           initialValue={user.buildingNo}
           rules={[{ required: true, message: 'Missing Building No' }]}
         >
@@ -105,8 +116,8 @@ const UserInfoDashboard = (user) => {
         </Form.Item>
         <Form.Item
           label='Street No'
-          key='streetNo'
-          name='streetNo'
+          key='streetNumber'
+          name='streetNumber'
           initialValue={user.buildingNo}
           rules={[{ required: true, message: 'Missing Street No' }]}
         >

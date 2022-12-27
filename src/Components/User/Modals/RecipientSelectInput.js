@@ -2,8 +2,9 @@ import { useEffect, useState, useRef } from 'react'
 import { Modal, Table, message, Typography, Input, Button, Space } from 'antd'
 // import { getMessageResourceKey } from '@/helper/backend_helper'
 import { SearchOutlined, CaretDownOutlined } from '@ant-design/icons'
+import { getUserRecipients } from '../../../ApiHelper/backend_helper'
 
-const RecipientSelectInput = ({ value, onChange }) => {
+const RecipientSelectInput = ({ value, onChange, user }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -16,37 +17,18 @@ const RecipientSelectInput = ({ value, onChange }) => {
 
   useEffect(() => {
     if (isModalVisible) {
-      // setIsLoading(true)
-      // getRecipients()
-      //   .then(data => {
-      //     console.log('dataKey', data)
-
-      //     const colData = data.data.map(d => ({
-      //       ...d,
-      //       id: d.id,
-      //       key: d.id
-      //     }))
-
-      //     setData(colData)
-      //   })
-      //   .catch(e => {
-      //     message.error('Error has occurred! ' + e.message)
-      //   })
-      //   .finally(() => {
-      //     setIsLoading(false)
-      //   })
-      setData([
-        { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 12, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 13, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 142, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 124, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 112, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 1111, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
-        { name: 'ather', id: 1231, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
-      ])
+      getUserRecipients(user.id)
+        .then((data) => {
+          setData(data)
+        })
+        .catch(e => {
+          message.error(e.message)
+          console.log(e)
+        })
+        .finally(() => {
+        })
     }
-  }, [isModalVisible])
+  }, [isModalVisible, user])
 
   useEffect(() => {
     setTotalCount(data.length)
@@ -62,7 +44,7 @@ const RecipientSelectInput = ({ value, onChange }) => {
   }
 
   const handleItemClick = item => {
-    onChange?.(item.id)
+    onChange?.(item.recipient_id)
     clear()
   }
 
@@ -74,11 +56,11 @@ const RecipientSelectInput = ({ value, onChange }) => {
   // const data
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      id: 'id',
-      name: 'id',
+      title: 'Recipient_id',
+      dataIndex: 'recipient_id',
+      key: 'recipient_id',
+      id: 'recipient_id',
+      name: 'recipient_id',
       type: 'number'
     },
     {
@@ -87,14 +69,6 @@ const RecipientSelectInput = ({ value, onChange }) => {
       dataIndex: 'name',
       key: 'name',
       name: 'name',
-      type: 'varchar'
-    },
-    {
-      title: 'Address',
-      id: 'address',
-      dataIndex: 'address',
-      key: 'address',
-      name: 'address',
       type: 'varchar'
     },
     {
@@ -111,6 +85,38 @@ const RecipientSelectInput = ({ value, onChange }) => {
       dataIndex: 'email',
       key: 'email',
       name: 'email',
+      type: 'varchar'
+    },
+    {
+      title: 'Building Number',
+      id: 'buildingNumber',
+      dataIndex: 'buildingNumber',
+      key: 'buildingNumber',
+      name: 'buildingNumber',
+      type: 'number'
+    },
+    {
+      title: 'Street Number',
+      id: 'streetNumber',
+      dataIndex: 'streetNumber',
+      key: 'streetNumber',
+      name: 'streetNumber',
+      type: 'number'
+    },
+    {
+      title: 'City',
+      id: 'city',
+      dataIndex: 'city',
+      key: 'city',
+      name: 'city',
+      type: 'varchar'
+    },
+    {
+      title: 'Province',
+      id: 'province',
+      dataIndex: 'province',
+      key: 'province',
+      name: 'province',
       type: 'varchar'
     }
   ]

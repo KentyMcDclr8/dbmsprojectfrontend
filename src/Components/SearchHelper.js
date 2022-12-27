@@ -10,7 +10,7 @@ const handleSearch = ({ selectedKeys, confirm, columnName, columnType, searchHan
     closeDropdown: true
   })
 
-  searchHandler()
+  searchHandler(selectedKeys)
 }
 
 const handleReset = ({ clearFilters, confirm, searchHandler }) => {

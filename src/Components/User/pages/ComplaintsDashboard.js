@@ -86,11 +86,12 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
     },
     {
       title: 'Package ID',
-      id: 'packageId',
-      dataIndex: 'packageId',
-      key: 'packageId',
-      name: 'packageId',
-      type: 'number'
+      id: 'package',
+      dataIndex: 'package',
+      key: 'package',
+      name: 'package',
+      type: 'number',
+      render: (text) => text.id
     },
     {
       title: 'Status',

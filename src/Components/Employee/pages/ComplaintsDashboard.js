@@ -4,6 +4,7 @@ import { SyncOutlined, InboxOutlined, ExclamationCircleOutlined, ExportOutlined,
 // import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
+import { getUserComplaints } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 
@@ -22,6 +23,10 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   // Table
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState()
+
+  useEffect(() => {
+    reset()
+  }, [user])
 
   const tagSelector = (text) => {
     console.log('text', text)
@@ -99,13 +104,16 @@ const ActiveShipmentsDashboard = ({ user, addPackage }) => {
   ]
 
   const reset = () => {
-    setData([
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' },
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Invalid Complaint' },
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Wrong Delivery', status: 'Processing' },
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Incorrect Status', status: 'Resolved' },
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' }
-    ])
+    getUserComplaints(user.id)
+      .then((data) => {
+        setData(data)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+      })
 
     let cols = []
     cols = columns?.map((column) => {

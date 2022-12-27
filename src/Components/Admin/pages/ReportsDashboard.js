@@ -3,14 +3,55 @@ import { Row, Col, Modal, Button, Card, Form, message, Select, Tooltip, Skeleton
 
 import { IdcardOutlined, DeleteOutlined, ExpandOutlined, ReloadOutlined } from '@ant-design/icons'
 // import { v4 as uuidv4 } from 'uuid'
-import { useCallback, useState } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import ReportModal from '../Modals/ReportModal'
+import { getAllReports, getReportById } from '../../../ApiHelper/backend_helper'
 
 const { TextArea } = Input
 
 const ReportsDashboard = () => {
   const [addModal, setAddModal] = useState(false)
   const [form] = Form.useForm()
+  const [cardData, setCardData] = useState([])
+
+  const [cardData2, setCardData2] = useState([])
+
+  useEffect(() => {
+    getAllReports()
+      .then((data) => {
+      // console.log("ALL REPORTS", data)
+        const tempdata = data
+        tempdata.forEach(element => {
+          getReportById(element.id)
+            .then((data) => {
+              const tempp = {
+                columns: data.columns,
+                data: data.data,
+                id: element.id
+              }
+              element.columns = data.columns
+              element.data = data.data
+
+              setCardData2([...cardData2, tempp])
+            })
+            .catch(e => {
+              message.error(e.message)
+              console.log(e)
+            })
+            .finally(() => {
+              setCardData(tempdata)
+            })
+        })
+        // console.log("Data final", tempdata)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+      })
+  }, [])
 
   const addPaymentMethod = () => {
     // TODO
@@ -52,11 +93,81 @@ const ReportsDashboard = () => {
     // TODO
     message.success('Report refreshed Successfully')
   }
-  const reportPull = (card) => {
-    // TODO
-    // getreport
+  // const reportPull = useCallback((card) => {
 
-    const columns = [
+  //   getReportById(card.id)
+  //     .then((data) => {
+
+  //       let col = data.columns
+  //       let dat = data.data
+
+  //       return (
+  //         <>
+
+  //           <ReportModal columns={col} data={dat} />
+  //         </>
+  //       )
+
+  //   })
+  //   .catch(e => {
+  //     message.error(e.message)
+  //     console.log(e)
+  //   })
+  //   .finally(() => {
+  //     form.resetFields()
+  //   })
+
+  // }, [cardData])
+
+  const getReport = (card) => {
+    const data = viewReportButton(card)
+  }
+
+  const viewReportButton = (card) => {
+    // TODO
+
+    // console.log("card data", card)
+    const columns = null
+    const dataT = null
+
+    // getReportById(card.id)
+    // .then((data) => {
+
+    //   columns = data.columns
+    //   dataT  = data.data
+
+    //   })
+    //   .catch(e => {
+    //     message.error(e.message)
+    //     console.log(e)
+    //   })
+    //   .finally(() => {
+    //     form.resetFields()
+    // })
+
+    // console.log("cardData", cardData)
+
+    const temp = cardData.find(o => o.id === card.id)
+    // console.log("temp", temp)
+    console.log('columns', temp.columns)
+    console.log('data', temp.data)
+
+    console.log("Object.hasOwn(object1, 'columns')", Object.hasOwn(temp, 'columns'))
+
+    // console.log("data", temp.columns.end_date)
+
+    const databackup = [
+      { name: 'ather', id: 1, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 12, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 13, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 142, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 124, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 112, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1111, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' },
+      { name: 'ather', id: 1231, email: 'atherilyas@gmail.com', phone: '+90 552 717 46 33', address: 'Bilkent, Ankara' }
+    ]
+
+    const columnsBackup = [
       {
         title: 'ID',
         dataIndex: 'id',
@@ -66,46 +177,43 @@ const ReportsDashboard = () => {
         type: 'number'
       },
       {
-        title: 'District',
-        id: 'district',
-        dataIndex: 'district',
-        key: 'district',
-        name: 'district',
+        title: 'Name',
+        id: 'name',
+        dataIndex: 'name',
+        key: 'name',
+        name: 'name',
         type: 'varchar'
       },
       {
-        title: 'Courier Count',
-        id: 'courierCount',
-        dataIndex: 'courierCount',
-        key: 'courierCount',
-        name: 'courierCount',
+        title: 'Address',
+        id: 'address',
+        dataIndex: 'address',
+        key: 'address',
+        name: 'address',
+        type: 'varchar'
+      },
+      {
+        title: 'Phone',
+        id: 'phone',
+        dataIndex: 'phone',
+        key: 'phone',
+        name: 'phone',
         type: 'number'
+      },
+      {
+        title: 'Email',
+        id: 'email',
+        dataIndex: 'email',
+        key: 'email',
+        name: 'email',
+        type: 'varchar'
       }
     ]
-
-    const data = [
-      { district: 'Bilkent', id: 1, courierCount: '5' },
-      { district: 'Cankaya', id: 2, courierCount: '3' },
-      { district: 'Istanbul', id: 3, courierCount: '2' },
-      { district: 'Tunus', id: 4, courierCount: '15' },
-      { district: 'Metro', id: 5, courierCount: '5' }
-    ]
-
     return (
-      <>
+      <ReportModal columns={columnsBackup} data={temp.data} />
 
-        <ReportModal columns={columns} data={data} />
-      </>
     )
   }
-
-  const cardData = [
-    { name: 'April Recipient Report', description: 'description', date: '17-10-2022' },
-    { name: 'April Employee Report', description: 'description', date: '17-10-2022' },
-    { name: 'April Courier Report', description: 'description', date: '17-10-2022' },
-    { name: 'March Courier Report', description: 'description', date: '17-10-2022' }
-  ]
-
   return (
     <>
       <Row className='table-form-comp'>
@@ -117,10 +225,26 @@ const ReportsDashboard = () => {
         {cardData.map(card => (
           <Col>
             <Card
-              title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>{card.name}</h2>}
+              title={<h2 style={{ fontSize: 25, fontWeight: 'normal' }}>{card.reportName}</h2>}
               extra={<>
 
-                {reportPull()}
+                {viewReportButton(card)}
+
+                {/* {viewReportButton(
+        getReportById(card.id)
+        .then((data) => {
+
+          return data
+
+          })
+          .catch(e => {
+            message.error(e.message)
+            console.log(e)
+          })
+          .finally(() => {
+            form.resetFields()
+          })
+    )} */}
                 <Tooltip
                   title='Refresh Report with current data'
                 >
@@ -142,9 +266,7 @@ const ReportsDashboard = () => {
               bordered
               type='inner'
             >
-              <h2 style={{ fontSize: 16, fontWeight: 'normal' }}>{card.bank}</h2>
-              <h2 style={{ fontSize: 16, fontWeight: 'normal' }}>{card.accountNumber}</h2>
-              <h2 style={{ fontSize: 16, fontWeight: 'normal' }}>Last used on {card.lastUsed}</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 'normal' }}>{card.description}</h2>
             </Card>
           </Col>
         ))}

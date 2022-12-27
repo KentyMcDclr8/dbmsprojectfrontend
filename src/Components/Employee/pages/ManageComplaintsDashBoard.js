@@ -5,6 +5,7 @@ import { SyncOutlined, ExclamationCircleOutlined, DeleteOutlined, ExportOutlined
 import { useEffect, useMemo, useCallback, useState } from 'react'
 import { getSearchProps } from '../../SearchHelper'
 import DeliveryBranchSelectInput from '../Modals/DeliveryBranchSelectInput'
+import { getUserComplaints, updateComplaint } from '../../../ApiHelper/backend_helper'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -28,6 +29,10 @@ const ManageComplaintsDashboard = ({ employee }) => {
 
   const [complaintModal, setcomplaintModal] = useState(false)
   const [activeComplaint, setActiveComplaint] = useState(null)
+
+  useEffect(() => {
+    reset()
+  }, [employee])
 
   const actionColumn = {
 
@@ -87,21 +92,22 @@ const ManageComplaintsDashboard = ({ employee }) => {
       name: 'type',
       type: 'varchar'
     },
-    {
-      title: 'Date Resolved',
-      id: 'dateResolved',
-      dataIndex: 'dateResolved',
-      key: 'dateResolved',
-      name: 'dateResolved',
-      type: 'date'
-    },
+    // {
+    //   title: 'Date Resolved',
+    //   id: 'dateResolved',
+    //   dataIndex: 'dateResolved',
+    //   key: 'dateResolved',
+    //   name: 'dateResolved',
+    //   type: 'date'
+    // },
     {
       title: 'Package ID',
-      id: 'packageId',
-      dataIndex: 'packageId',
-      key: 'packageId',
-      name: 'packageId',
-      type: 'number'
+      id: 'package',
+      dataIndex: 'package',
+      key: 'package',
+      name: 'package',
+      type: 'number',
+      render: (text) => text.id
     },
     {
       title: 'Status',
@@ -115,13 +121,16 @@ const ManageComplaintsDashboard = ({ employee }) => {
   ]
 
   const reset = () => {
-    setData([
-      { details: 'damage to package', id: 1, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Invalid Complaint' },
-      { details: 'Package still not delivered', id: 2, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' },
-      { details: 'damage to package', id: 3, dateResolved: '14-30-20', packageId: '503', type: 'Wrong Delivery', status: 'Processing' },
-      { details: 'Package was damaged when delivered', id: 4, dateResolved: '14-30-20', packageId: '503', type: 'Processing', status: 'Resolved' },
-      { details: 'damage to package', id: 5, dateResolved: '14-30-20', packageId: '503', type: 'Late Delivery', status: 'Resolved' }
-    ])
+    getUserComplaints(5)
+      .then((data) => {
+        setData(data)
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+      })
 
     let cols = []
     cols = columns?.map((column) => {
@@ -206,11 +215,22 @@ const ManageComplaintsDashboard = ({ employee }) => {
     // })
   }
 
-  const editComplaintApiCall = () => {
+  const editComplaintApiCall = (values) => {
     // TODO
+    updateComplaint(values.id, values)
+      .then((data) => {
+        // setColumnData(colData)
+        message.success('Complaint Updated Successfully')
+      })
+      .catch(e => {
+        message.error(e.message)
+        console.log(e)
+      })
+      .finally(() => {
+        form.resetFields()
+        reset()
+      })
     setcomplaintModal(false)
-    form.resetFields()
-    message.success('Complaint Updated Successfully')
   }
 
   const editCancelled = () => {
@@ -318,11 +338,20 @@ const ManageComplaintsDashboard = ({ employee }) => {
             colon
           >
             <Form.Item
+              label='Complaint ID'
+              key='id'
+              name='id'
+
+              initialValue={activeComplaint === null ? null : activeComplaint.id}
+            >
+              <Input disabled />
+            </Form.Item>
+            <Form.Item
               label='Package ID'
               key='packageId'
               name='packageId'
 
-              initialValue={activeComplaint === null ? null : activeComplaint.packageId}
+              initialValue={activeComplaint === null ? null : activeComplaint.package.id}
             >
               <Input disabled />
             </Form.Item>

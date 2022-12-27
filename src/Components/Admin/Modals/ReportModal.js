@@ -14,7 +14,9 @@ const ReportModal = ({ onChange, columns, data }) => {
   const [currentPageSize, setCurrentPageSize] = useState(defaultPageSize)
 
   useEffect(() => {
-    setTotalCount(data.length)
+    // setTotalCount(3)
+    console.log(' report modal data', data)
+    console.log(' isModalVisible', isModalVisible)
     setCurrentPage(1)
   }, [data])
 

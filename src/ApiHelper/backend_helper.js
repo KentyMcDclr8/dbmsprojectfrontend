@@ -74,7 +74,7 @@ export const getAllCourier = async () => {
 }
 
 export const getAllComplaints = async () => {
-  return await getFetcher(url.GET_COMPLAINT)
+  return await getFetcher(url.GET_COMPLAINT(4))
 }
 export const getUserComplaints = async (userId) => {
   return await getFetcher(url.GET_COMPLAINT(userId))
@@ -93,4 +93,16 @@ export const deletePaymentMethod = async (accountNo, userId) => {
 
 export const updateCourier = async (id, body) => {
   return await putFetcher(url.UPDATE_COURIER(id), body)
+}
+
+export const updateComplaint = async (id, body) => {
+  return await putFetcher(url.UPDATE_COMPLAINT(id), body)
+}
+
+export const getAllReports = async () => {
+  return await getFetcher(url.GET_REPORT)
+}
+
+export const getReportById = async (id) => {
+  return await getFetcher(url.GET_REPORT_ID(id))
 }
